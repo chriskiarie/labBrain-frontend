@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabBrain - Supervisor Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .red-theme { background: #fef2f2; }
+        .red-gradient { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .red-accent { color: #ef4444; }
+        .upload-area { border: 2px dashed #ef4444; background: #fef2f2; }
+        .chat-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
+        .chat-container { background: white; border-radius: 20px; width: 90%; max-width: 800px; height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
+        .typing-indicator { display: none; }
+        .typing-dots::after { content: ''; animation: typing 1.5s infinite; }
+        @keyframes typing { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
+    </style>
+</head>
+<body class="red-theme">
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between shadow-sm">
+        <div class="flex items-center gap-4">
+            <img src="KEBS_LOGO.jpg" alt="KEBS Logo" class="h-16 w-auto">
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">LabBrain</h1>
+                <p class="text-sm text-gray-600">Supervisor Dashboard</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <div class="text-right">
+                <p class="font-semibold text-gray-800">Welcome, Christine</p>
+                <p class="text-sm text-gray-600">Lab Supervisor</p>
+            </div>
+            <div class="w-10 h-10 rounded-full red-gradient flex items-center justify-center text-white font-semibold">C</div>
+            <button class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="p-8">
+        <!-- Welcome Section -->
+        <div class="red-gradient text-white p-8 rounded-2xl mb-8">
+            <h2 class="text-2xl font-bold mb-2">Knowledge Management Dashboard</h2>
+            <p class="text-red-100">Upload documents, manage knowledge base, and test the AI assistant. You have full control over LabBrain's learning resources.</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="openUpload()">
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">📤</div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Upload Documents</h3>
+                <p class="text-gray-600">Add new procedures, standards, and guidelines to the knowledge base</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="openChatModal()">
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">🤖</div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Test AI Assistant</h3>
+                <p class="text-gray-600">Launch the chatbot to test responses and verify knowledge integration</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="viewDocuments()">
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">📁</div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Manage Documents</h3>
+                <p class="text-gray-600">View, edit, and organize existing documents in the knowledge base</p>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="viewAnalytics()">
+                <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">📊</div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">AI Analytics</h3>
+                <p class="text-gray-600">Monitor AI performance and document classification insights</p>
+            </div>
+        </div>
+
+        <!-- Document Upload Section -->
+        <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200 mb-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Document Upload</h3>
+            <div class="upload-area rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('fileInput').click()">
+                <div class="text-5xl mb-4">📄</div>
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">Drop files here or click to upload</h4>
+                <p class="text-gray-600">Support for PDF, DOC, DOCX, TXT files up to 10MB</p>
+                <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(event)">
+            </div>
+            <div id="uploadProgress" class="mt-4 hidden">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Uploading...</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progressFill" class="red-gradient h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Document Management -->
+        <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200 mb-8">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">Knowledge Base Documents</h3>
+            <div id="documentList">
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg mb-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-lg">📋</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">ISO 17025 Calibration Procedures</h4>
+                            <p class="text-sm text-gray-600">PDF • 2.3 MB • Uploaded 2 days ago</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600" onclick="editDocument('iso17025')">Edit</button>
+                        <button class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600" onclick="deleteDocument('iso17025')">Delete</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg mb-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-lg">🔧</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Equipment Troubleshooting Guide</h4>
+                            <p class="text-sm text-gray-600">DOCX • 1.8 MB • Uploaded 1 week ago</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600" onclick="editDocument('troubleshooting')">Edit</button>
+                        <button class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600" onclick="deleteDocument('troubleshooting')">Delete</button>
+                    </div>
+                </div>
+                
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg mb-2 bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-lg">📊</div>
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Quality Control Standards</h4>
+                            <p class="text-sm text-gray-600">PDF • 3.1 MB • Uploaded 3 days ago</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600" onclick="editDocument('qc-standards')">Edit</button>
+                        <button class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600" onclick="deleteDocument('qc-standards')">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Classification Section -->
+        <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">AI Document Classification & Analysis</h3>
+            <div id="classificationList">
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-semibold text-gray-800">ISO 17025 Calibration Procedures</span>
+                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">Standards & Guidelines</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-2">Confidence: 95% • Keywords: calibration, ISO, procedures, standards</div>
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
+                        <p class="text-sm text-gray-700"><strong>Document Description:</strong> Comprehensive guide covering ISO 17025 accreditation requirements for calibration laboratories. Includes management system requirements, technical competence standards, and quality assurance procedures for maintaining accreditation status.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-semibold text-gray-800">Equipment Troubleshooting Guide</span>
+                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">Troubleshooting</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-2">Confidence: 92% • Keywords: equipment, troubleshooting, repair, maintenance</div>
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
+                        <p class="text-sm text-gray-700"><strong>Document Description:</strong> Step-by-step troubleshooting manual for laboratory equipment including multimeters, oscilloscopes, and calibration standards. Contains diagnostic procedures, common error codes, preventive maintenance schedules, and repair protocols.</p>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-semibold text-gray-800">Quality Control Standards</span>
+                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">Quality Assurance</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-2">Confidence: 88% • Keywords: quality, control, standards, assurance</div>
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
+                        <p class="text-sm text-gray-700"><strong>Document Description:</strong> Quality control framework and standards for DC/LF metrology laboratory operations. Defines quality metrics, control procedures, measurement uncertainty calculations, and compliance requirements for maintaining measurement traceability.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chat Modal -->
+    <div id="chatModal" class="chat-modal">
+        <div class="chat-container">
+            <div class="red-gradient text-white p-6 flex items-center justify-between">
+                <h3 class="font-semibold text-lg">LabBrain AI Assistant - Supervisor Test Mode</h3>
+                <button class="text-white text-2xl hover:text-gray-200" onclick="closeChatModal()">×</button>
+            </div>
+            
+            <div id="chatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
+                <div class="flex items-start gap-3 mb-6">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">AI</div>
+                    <div class="bg-white p-4 rounded-2xl border border-gray-200 max-w-3/4">
+                        Hello Christine! I'm in Supervisor Test Mode. I can access all the documents you've uploaded to the knowledge base. 
+                        <br><br>
+                        <strong>Available knowledge:</strong>
+                        <br>• ISO 17025 Calibration Procedures
+                        <br>• Equipment Troubleshooting Guide  
+                        <br>• Quality Control Standards
+                        <br><br>
+                        Test me with any questions about these documents or general lab topics!
+                    </div>
+                </div>
+            </div>
+            
+            <div id="typingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
+                <span class="typing-dots text-gray-600">AI is typing</span>
+            </div>
+            
+            <div class="p-6 border-t border-gray-200 bg-white">
+                <div class="flex gap-3 items-center">
+                    <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-red-500 outline-none" placeholder="Test the AI with questions about uploaded documents..." onkeypress="handleChatKeyPress(event)">
+                    <button class="w-12 h-12 red-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load user data from localStorage
+        let currentUser = null;
+        
+        function loadUserData() {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                updateUserDisplay();
+            } else {
+                // Redirect to login if no user data
+                window.location.href = 'Main.html';
+            }
+        }
+        
+        function updateUserDisplay() {
+            if (currentUser) {
+                // Update welcome message
+                const welcomeElement = document.querySelector('.text-right p:first-child');
+                if (welcomeElement) {
+                    welcomeElement.textContent = `Welcome, ${currentUser.fullName || currentUser.username}`;
+                }
+                
+                // Update role display
+                const roleElement = document.querySelector('.text-right p:last-child');
+                if (roleElement) {
+                    roleElement.textContent = currentUser.role === 'supervisor' ? 'Lab Supervisor' : 'Lab User';
+                }
+                
+                // Update avatar initial
+                const avatarElement = document.querySelector('.w-10.h-10.rounded-full');
+                if (avatarElement) {
+                    avatarElement.textContent = (currentUser.fullName || currentUser.username).charAt(0).toUpperCase();
+                }
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'Main.html';
+        }
+        
+        // Load user data when page loads
+        document.addEventListener('DOMContentLoaded', loadUserData);
+
+        function openUpload() {
+            document.getElementById('fileInput').click();
+        }
+
+        function openChatModal() {
+            document.getElementById('chatModal').style.display = 'flex';
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').style.display = 'none';
+        }
+
+        function viewDocuments() {
+            alert('Document management interface - Coming soon!');
+        }
+
+        function viewAnalytics() {
+            alert('AI Analytics dashboard - Coming soon!');
+        }
+
+        function handleFileUpload(event) {
+            const files = event.target.files;
+            if (files.length > 0) {
+                document.getElementById('uploadProgress').classList.remove('hidden');
+                simulateUpload(files);
+            }
+        }
+
+        function simulateUpload(files) {
+            let progress = 0;
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        document.getElementById('uploadProgress').classList.add('hidden');
+                        addNewDocument(files[0]);
+                        updateClassification();
+                    }, 500);
+                }
+                progressFill.style.width = progress + '%';
+                progressText.textContent = Math.round(progress) + '%';
+            }, 200);
+        }
+
+        function addNewDocument(file) {
+            const documentList = document.getElementById('documentList');
+            const newDoc = document.createElement('div');
+            newDoc.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-lg mb-2 bg-gray-50 hover:bg-gray-100 transition-colors';
+            newDoc.innerHTML = `
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-lg">📄</div>
+                    <div>
+                        <h4 class="font-semibold text-gray-800">${file.name}</h4>
+                        <p class="text-sm text-gray-600">${getFileType(file.name)} • ${formatFileSize(file.size)} • Uploaded just now</p>
+                    </div>
+                </div>
+                <div class="flex gap-2">
+                    <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600" onclick="editDocument('${file.name}')">Edit</button>
+                    <button class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600" onclick="deleteDocument('${file.name}')">Delete</button>
+                </div>
+            `;
+            documentList.insertBefore(newDoc, documentList.firstChild);
+        }
+
+        function getFileType(filename) {
+            return filename.split('.').pop().toUpperCase();
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function updateClassification() {
+            const classificationList = document.getElementById('classificationList');
+            const newClassification = document.createElement('div');
+            newClassification.className = 'bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4';
+            newClassification.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="font-semibold text-gray-800">New Uploaded Document</span>
+                    <span class="bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-medium">Processing...</span>
+                </div>
+                <div class="text-sm text-gray-600 mb-2">AI is analyzing document content and keywords...</div>
+                <div class="bg-white p-3 rounded-lg border-l-4 border-yellow-500">
+                    <p class="text-sm text-gray-700"><strong>Document Description:</strong> AI is currently analyzing document content to generate a comprehensive description...</p>
+                </div>
+            `;
+            classificationList.insertBefore(newClassification, classificationList.firstChild);
+            
+            // Simulate AI classification and description generation after 3 seconds
+            setTimeout(() => {
+                const documentTypes = [
+                    {
+                        category: 'Lab Procedures',
+                        description: 'Laboratory procedure manual containing step-by-step instructions for calibration processes, measurement techniques, and standard operating procedures for DC/LF metrology equipment.',
+                        confidence: '87%',
+                        keywords: 'procedures, lab, documentation, guidelines'
+                    },
+                    {
+                        category: 'Technical Specifications',
+                        description: 'Technical specification document detailing equipment specifications, measurement ranges, accuracy requirements, and performance criteria for laboratory instruments.',
+                        confidence: '91%',
+                        keywords: 'specifications, technical, equipment, accuracy'
+                    },
+                    {
+                        category: 'Safety Guidelines',
+                        description: 'Safety guidelines and protocols for laboratory operations including electrical safety, equipment handling procedures, and emergency response protocols.',
+                        confidence: '89%',
+                        keywords: 'safety, guidelines, protocols, emergency'
+                    },
+                    {
+                        category: 'Training Materials',
+                        description: 'Training materials and educational content for laboratory personnel including theoretical concepts, practical exercises, and competency assessment criteria.',
+                        confidence: '85%',
+                        keywords: 'training, education, competency, assessment'
+                    },
+                    {
+                        category: 'Compliance Documentation',
+                        description: 'Compliance documentation covering regulatory requirements, audit procedures, and documentation standards for maintaining laboratory accreditation.',
+                        confidence: '93%',
+                        keywords: 'compliance, regulatory, audit, accreditation'
+                    }
+                ];
+                
+                const randomType = documentTypes[Math.floor(Math.random() * documentTypes.length)];
+                
+                newClassification.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-semibold text-gray-800">New Uploaded Document</span>
+                        <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">${randomType.category}</span>
+                    </div>
+                    <div class="text-sm text-gray-600 mb-2">Confidence: ${randomType.confidence} • Keywords: ${randomType.keywords}</div>
+                    <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
+                        <p class="text-sm text-gray-700"><strong>Document Description:</strong> ${randomType.description}</p>
+                    </div>
+                `;
+            }, 3000);
+        }
+
+        function editDocument(docId) {
+            alert(`Edit document: ${docId} - Coming soon!`);
+        }
+
+        function deleteDocument(docId) {
+            if (confirm(`Are you sure you want to delete ${docId}?`)) {
+                alert(`Document ${docId} deleted successfully!`);
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            document.getElementById('typingIndicator').style.display = 'block';
+            
+            setTimeout(() => {
+                document.getElementById('typingIndicator').style.display = 'none';
+                const response = generateSupervisorResponse(message);
+                addMessage(response, 'bot');
+            }, 1500);
+        }
+
+        function addMessage(content, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex items-start gap-3 mb-6';
+            if (sender === 'user') messageDiv.className += ' flex-row-reverse';
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm';
+            avatar.style.background = sender === 'user' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : '#10b981';
+            avatar.textContent = sender === 'user' ? 'C' : 'AI';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'p-4 rounded-2xl max-w-3/4';
+            messageContent.style.background = sender === 'user' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'white';
+            messageContent.style.color = sender === 'user' ? 'white' : '#374151';
+            messageContent.style.border = sender === 'user' ? 'none' : '1px solid #e5e7eb';
+            messageContent.textContent = content;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function generateSupervisorResponse(userMessage) {
+            const message = userMessage.toLowerCase();
+            
+            if (message.includes('upload') || message.includes('document')) {
+                return "I can see you've uploaded several documents to the knowledge base: ISO 17025 Calibration Procedures, Equipment Troubleshooting Guide, and Quality Control Standards. These documents are now part of my training data and I can reference them when answering questions.";
+            }
+            else if (message.includes('iso') || message.includes('17025')) {
+                return "Based on the ISO 17025 Calibration Procedures document in the knowledge base, I can provide detailed information about calibration requirements, documentation standards, and compliance procedures. The document covers both management and technical requirements for testing and calibration laboratories.";
+            }
+            else if (message.includes('troubleshoot') || message.includes('equipment')) {
+                return "I have access to the Equipment Troubleshooting Guide which contains comprehensive diagnostic procedures, common issues, and maintenance schedules. I can help users with equipment problems, error diagnosis, and preventive maintenance procedures.";
+            }
+            else if (message.includes('quality') || message.includes('control')) {
+                return "The Quality Control Standards document provides detailed guidelines for quality assurance, control procedures, and compliance requirements. I can assist with quality control protocols, standards implementation, and quality metrics analysis.";
+            }
+            else if (message.includes('test') || message.includes('knowledge')) {
+                return "I'm successfully integrated with the knowledge base you've uploaded. I can now provide accurate, document-based responses to lab-related questions. The AI classification system has categorized the documents appropriately for optimal retrieval.";
+            }
+            else {
+                return "As a supervisor, I have access to all the documents you've uploaded to the knowledge base. I can provide detailed, accurate responses based on the ISO 17025 procedures, troubleshooting guides, and quality control standards. What specific aspect would you like me to explain?";
+            }
+        }
+    </script>
+</body>
+</html> 
