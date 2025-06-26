@@ -136,40 +136,46 @@
             }, 300);
         }
 
-        async function handleLogin(event) {
-            event.preventDefault();
+async function handleLogin(event) {
+    event.preventDefault();
 
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+    // Show loader
+    document.getElementById('loader').style.display = 'flex';
 
-            try {
-                const response = await fetch(`${LabBrainConfig.apiUrl}/api/auth/login`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                const data = await response.json();
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
 
-                if (data.success && data.data && data.data.token && data.data.user) {
-                    // Save token to localStorage
-                    localStorage.setItem('token', data.data.token);
-                    localStorage.setItem('user', JSON.stringify(data.data.user));
+    try {
+        const response = await fetch(`${LabBrainConfig.apiUrl}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
 
-                    showMessage('Login successful! Redirecting...', 'success');
-                    setTimeout(() => {
-                        if (data.data.user.role === 'supervisor') {
-                            window.location.href = 'supervisor_dashboard.html';
-                        } else {
-                            window.location.href = 'lab_user_dashboard.html';
-                        }
-                    }, 1500);
+        if (data.success && data.data && data.data.token && data.data.user) {
+            // Save token to localStorage
+            localStorage.setItem('token', data.data.token);
+            localStorage.setItem('user', JSON.stringify(data.data.user));
+
+            showMessage('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                if (data.data.user.role === 'supervisor') {
+                    window.location.href = 'supervisor_dashboard.html';
                 } else {
-                    showMessage(data.message || 'Invalid User ID or Password. Please try again.', 'error');
+                    window.location.href = 'lab_user_dashboard.html';
                 }
-            } catch (error) {
-                showMessage('Server error. Please try again later.', 'error');
-            }
+            }, 1500);
+        } else {
+            showMessage(data.message || 'Invalid User ID or Password. Please try again.', 'error');
         }
+    } catch (error) {
+        showMessage('Server error. Please try again later.', 'error');
+    } finally {
+        // Hide loader
+        document.getElementById('loader').style.display = 'none';
+    }
+}
 
         function showMessage(message, type = 'info') {
             const messageBox = document.getElementById('messageBox');
