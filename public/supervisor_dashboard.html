@@ -9,7 +9,6 @@
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="config.js"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
         .red-theme { background: #fef2f2; }
@@ -263,7 +262,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = 'index.html';
+            window.location.href = 'Main.html';
         }
         
         // Load user data when page loads
@@ -432,7 +431,7 @@
             }
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
             
@@ -443,11 +442,45 @@
             
             document.getElementById('typingIndicator').style.display = 'block';
             
-            setTimeout(() => {
+            try {
+                // Get token from localStorage
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    document.getElementById('typingIndicator').style.display = 'none';
+                    addMessage('Please log in to use the AI chat.', 'bot');
+                    return;
+                }
+                
+                // Call the AI backend
+                const response = await fetch('https://your-backend-url.herokuapp.com/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                
                 document.getElementById('typingIndicator').style.display = 'none';
-                const response = generateSupervisorResponse(message);
-                addMessage(response, 'bot');
-            }, 1500);
+                
+                if (data.success) {
+                    addMessage(data.data.response, 'bot');
+                    
+                    // Add source information if available
+                    if (data.data.sources && data.data.sources.length > 0) {
+                        const sources = data.data.sources.map(s => s.title).join(', ');
+                        addMessage(`📚 Sources: ${sources}`, 'system');
+                    }
+                } else {
+                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                }
+            } catch (error) {
+                document.getElementById('typingIndicator').style.display = 'none';
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                console.error('Chat error:', error);
+            }
         }
 
         function addMessage(content, sender) {
