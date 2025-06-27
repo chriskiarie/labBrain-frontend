@@ -9,7 +9,6 @@
     <!-- Google Fonts - Inter -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
-    <script src="config.js"></script>
     <style>
         .dashboard-header {
             background: #fff;
@@ -435,7 +434,7 @@
         function logout() {
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            window.location.href = 'index.html';
+            window.location.href = 'Main.html';
         }
         
         // Load user data when page loads
@@ -473,7 +472,7 @@
             }
         }
 
-        function sendMessage() {
+        async function sendMessage() {
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
             
@@ -486,12 +485,45 @@
             // Show typing indicator
             showTypingIndicator();
             
-            // Simulate AI response
-            setTimeout(() => {
+            try {
+                // Get token from localStorage
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    hideTypingIndicator();
+                    addMessage('Please log in to use the AI chat.', 'bot');
+                    return;
+                }
+                
+                // Call the AI backend
+                const response = await fetch('https://your-backend-url.herokuapp.com/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                
                 hideTypingIndicator();
-                const response = generateAIResponse(message, currentTopic);
-                addMessage(response, 'bot');
-            }, 1500);
+                
+                if (data.success) {
+                    addMessage(data.data.response, 'bot');
+                    
+                    // Add source information if available
+                    if (data.data.sources && data.data.sources.length > 0) {
+                        const sources = data.data.sources.map(s => s.title).join(', ');
+                        addMessage(`📚 Sources: ${sources}`, 'system');
+                    }
+                } else {
+                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                console.error('Chat error:', error);
+            }
         }
 
         function addMessage(content, sender) {
