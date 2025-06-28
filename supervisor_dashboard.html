@@ -60,13 +60,15 @@
     </style>
 </head>
 <body class="red-theme">
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 items-end"></div>
     <!-- Header -->
     <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between shadow-sm">
         <div class="flex items-center gap-4">
-            <img src="assets/KEBS_LOGO.jpg" alt="KEBS Logo" class="h-16 w-auto">
+            <img src="assets/KEBS_LOGO.jpg" alt="KEBS Logo" class="h-20 w-auto">
             <div>
-                <h1 class="text-xl font-bold text-gray-800">LabBrain</h1>
-                <p class="text-sm text-gray-600">Supervisor Dashboard</p>
+                <h1 class="text-2xl font-extrabold text-gray-800 tracking-wide">LabBrain</h1>
+                <p class="text-base text-gray-600">Supervisor Dashboard</p>
             </div>
         </div>
         <div class="flex items-center gap-4">
@@ -352,9 +354,14 @@
                         const category = doc.aiAnalysis?.category || 'Uncategorized';
                         const keywords = doc.aiAnalysis?.keywords?.join(', ') || 'document, lab, information';
                         const description = doc.aiAnalysis?.description || 'Document uploaded to the knowledge base for AI analysis and retrieval.';
-                        
+                        const status = doc.status || 'pending';
                         // Format category name for display
                         const formattedCategory = category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                        // Status badge color
+                        let statusColor = 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                        let statusText = 'Pending';
+                        if (status === 'completed') { statusColor = 'bg-green-100 text-green-800 border-green-300'; statusText = 'Analyzed'; }
+                        if (status === 'failed') { statusColor = 'bg-red-100 text-red-800 border-red-300'; statusText = 'Failed'; }
                         
                         const classificationElement = document.createElement('div');
                         classificationElement.className = 'bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4';
@@ -363,8 +370,9 @@
                                 <span class="font-semibold text-gray-800">${doc.originalName}</span>
                                 <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">${formattedCategory}</span>
                             </div>
-                            <div class="text-sm text-gray-600 mb-3">
-                                <strong>Keywords:</strong> ${keywords}
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="text-xs px-2 py-1 rounded-full border ${statusColor}">${statusText}</span>
+                                <span class="text-sm text-gray-600"><strong>Keywords:</strong> ${keywords}</span>
                             </div>
                             <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
                                 <p class="text-sm text-gray-700"><strong>Document Description:</strong> ${description}</p>
@@ -600,14 +608,14 @@
                 });
                 const data = await response.json();
                 if (data.success) {
-                    alert('Document deleted successfully!');
+                    showToast('Document deleted successfully!', 'success');
                     loadManageDocuments();
                     loadExistingDocuments(); // refresh main dashboard too
                 } else {
-                    alert('Delete failed: ' + (data.message || 'Unknown error'));
+                    showToast('Delete failed: ' + (data.message || 'Unknown error'), 'error');
                 }
             } catch (err) {
-                alert('Delete failed: ' + err.message);
+                showToast('Delete failed: ' + err.message, 'error');
             }
         }
 
@@ -628,7 +636,7 @@
                 // Get token from localStorage
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    alert('Please log in to upload documents.');
+                    showToast('Please log in to upload documents.', 'error');
                     return;
                 }
 
@@ -674,15 +682,15 @@
                         // Reload all documents from server instead of just adding one
                         loadExistingDocuments();
                         updateClassification(data.data.document);
-                        alert('Document uploaded successfully!');
+                        showToast('Document uploaded successfully!', 'success');
                     } else {
-                        alert('Upload failed: ' + (data.message || 'Unknown error'));
+                        showToast('Upload failed: ' + (data.message || 'Unknown error'), 'error');
                     }
                 }, 500);
 
             } catch (error) {
                 document.getElementById('uploadProgress').classList.add('hidden');
-                alert('Upload failed: ' + error.message);
+                showToast('Upload failed: ' + error.message, 'error');
                 console.error('Upload error:', error);
             }
         }
@@ -939,7 +947,7 @@
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    alert('Please log in to analyze documents.');
+                    showToast('Please log in to analyze documents.', 'error');
                     return;
                 }
 
@@ -951,7 +959,7 @@
                 const data = await response.json();
                 
                 if (!data.success || !data.data.documents.length) {
-                    alert('No documents found to analyze.');
+                    showToast('No documents found to analyze.', 'error');
                     return;
                 }
 
@@ -959,7 +967,7 @@
                 const unanalyzedDocs = data.data.documents.filter(doc => !doc.aiAnalysis || !doc.aiAnalysis.category);
                 
                 if (unanalyzedDocs.length === 0) {
-                    alert('All documents have already been analyzed!');
+                    showToast('All documents have already been analyzed!', 'success');
                     return;
                 }
 
@@ -1001,11 +1009,11 @@
 
                 // Show results
                 if (successCount > 0) {
-                    alert(`Analysis complete! Successfully analyzed ${successCount} document(s).${errorCount > 0 ? ` ${errorCount} document(s) failed.` : ''}`);
+                    showToast(`Analysis complete! Successfully analyzed ${successCount} document(s).${errorCount > 0 ? ` ${errorCount} document(s) failed.` : ''}`, 'success');
                     // Reload the classifications to show new results and update button state
                     loadExistingDocuments();
                 } else {
-                    alert(`Analysis failed for all documents. Please try again.`);
+                    showToast(`Analysis failed for all documents. Please try again.`, 'error');
                     // Reset button to original state
                     analyzeBtn.innerHTML = originalText;
                     analyzeBtn.disabled = false;
@@ -1015,7 +1023,7 @@
 
             } catch (error) {
                 console.error('Analyze all documents error:', error);
-                alert('Error analyzing documents: ' + error.message);
+                showToast('Error analyzing documents: ' + error.message, 'error');
                 
                 // Reset button
                 const analyzeBtn = document.querySelector('button[onclick="analyzeAllDocuments()"]');
@@ -1033,7 +1041,7 @@
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    alert('Please log in to analyze documents.');
+                    showToast('Please log in to analyze documents.', 'error');
                     return;
                 }
 
@@ -1059,16 +1067,16 @@
                 analyzeBtn.disabled = false;
 
                 if (data.success) {
-                    alert('Document analyzed successfully!');
+                    showToast('Document analyzed successfully!', 'success');
                     // Refresh the documents list to show the new analysis
                     loadManageDocuments();
                     loadExistingDocuments();
                 } else {
-                    alert('Analysis failed: ' + (data.message || 'Unknown error'));
+                    showToast('Analysis failed: ' + (data.message || 'Unknown error'), 'error');
                 }
             } catch (error) {
                 console.error('Analysis error:', error);
-                alert('Analysis failed: ' + error.message);
+                showToast('Analysis failed: ' + error.message, 'error');
                 
                 // Reset button
                 const analyzeBtn = event.target;
@@ -1081,7 +1089,7 @@
             try {
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    alert('Please log in to view analysis.');
+                    showToast('Please log in to view analysis.', 'error');
                     return;
                 }
 
@@ -1101,11 +1109,11 @@
                     // Show analysis modal
                     showAnalysisModal(doc, analysis);
                 } else {
-                    alert('No analysis found for this document.');
+                    showToast('No analysis found for this document.', 'error');
                 }
             } catch (error) {
                 console.error('View analysis error:', error);
-                alert('Error loading analysis: ' + error.message);
+                showToast('Error loading analysis: ' + error.message, 'error');
             }
         }
 
@@ -1176,6 +1184,28 @@
                 modal.remove();
             }
         }
+
+        // Toast Notification System
+        function showToast(message, type = 'success', duration = 3500) {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `px-5 py-3 rounded-lg shadow-lg text-white font-medium flex items-center gap-2 animate-fade-in ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}`;
+            toast.innerHTML = type === 'success' ? `<span>✔️</span> <span>${message}</span>` : `<span>❌</span> <span>${message}</span>`;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('animate-fade-out');
+                setTimeout(() => toast.remove(), 400);
+            }, duration);
+        }
+        // Toast Animations
+        const style = document.createElement('style');
+        style.innerHTML = `
+        @keyframes fade-in { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: translateY(0);} }
+        @keyframes fade-out { from { opacity: 1; } to { opacity: 0; transform: translateY(20px);} }
+        .animate-fade-in { animation: fade-in 0.4s cubic-bezier(.4,0,.2,1) both; }
+        .animate-fade-out { animation: fade-out 0.4s cubic-bezier(.4,0,.2,1) both; }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html> 
