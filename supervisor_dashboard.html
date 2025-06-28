@@ -369,12 +369,17 @@
                     </thead>
                     <tbody>`;
                 data.data.documents.forEach(doc => {
+                    const hasAnalysis = doc.aiAnalysis && doc.aiAnalysis.category;
                     html += `<tr class='border-b hover:bg-gray-50'>
                         <td class='p-2'>${doc.originalName}</td>
                         <td class='p-2'>${doc.fileType.toUpperCase()}</td>
                         <td class='p-2'>${new Date(doc.createdAt).toLocaleString()}</td>
                         <td class='p-2'>
                             <a href="https://labbrain-backend.onrender.com/uploads/${doc.filename}" target="_blank" class="text-blue-600 underline mr-2">Open</a>
+                            ${hasAnalysis ? 
+                                `<button onclick="viewAnalysis('${doc._id}')" class="text-green-600 underline mr-2">View Analysis</button>` : 
+                                `<button onclick="analyzeDocument('${doc._id}')" class="text-purple-600 underline mr-2">Analyze</button>`
+                            }
                             <button onclick="deleteDocumentFromManage('${doc._id}')" class="text-red-600 underline">Delete</button>
                         </td>
                     </tr>`;
@@ -666,6 +671,161 @@
 
         function closeUploadDocuments() {
             document.getElementById('uploadDocumentsModal').classList.add('hidden');
+        }
+
+        // AI Analysis Functions
+        async function analyzeDocument(docId) {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Please log in to analyze documents.');
+                    return;
+                }
+
+                // Show loading state
+                const analyzeBtn = event.target;
+                const originalText = analyzeBtn.textContent;
+                analyzeBtn.textContent = 'Analyzing...';
+                analyzeBtn.disabled = true;
+
+                const response = await fetch('https://labbrain-backend.onrender.com/api/ai/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ documentId: docId })
+                });
+
+                const data = await response.json();
+
+                // Reset button
+                analyzeBtn.textContent = originalText;
+                analyzeBtn.disabled = false;
+
+                if (data.success) {
+                    alert('Document analyzed successfully!');
+                    // Refresh the documents list to show the new analysis
+                    loadManageDocuments();
+                    loadExistingDocuments();
+                } else {
+                    alert('Analysis failed: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Analysis error:', error);
+                alert('Analysis failed: ' + error.message);
+                
+                // Reset button
+                const analyzeBtn = event.target;
+                analyzeBtn.textContent = 'Analyze';
+                analyzeBtn.disabled = false;
+            }
+        }
+
+        async function viewAnalysis(docId) {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Please log in to view analysis.');
+                    return;
+                }
+
+                // Get document details
+                const response = await fetch(`https://labbrain-backend.onrender.com/api/documents/${docId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success && data.data.document.aiAnalysis) {
+                    const analysis = data.data.document.aiAnalysis;
+                    const doc = data.data.document;
+                    
+                    // Show analysis modal
+                    showAnalysisModal(doc, analysis);
+                } else {
+                    alert('No analysis found for this document.');
+                }
+            } catch (error) {
+                console.error('View analysis error:', error);
+                alert('Error loading analysis: ' + error.message);
+            }
+        }
+
+        function showAnalysisModal(doc, analysis) {
+            // Create modal HTML
+            const modalHTML = `
+                <div id="analysisModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div class="flex justify-between items-center mb-4">
+                            <h2 class="text-xl font-bold text-gray-800">AI Analysis Results</h2>
+                            <button onclick="closeAnalysisModal()" class="text-gray-500 hover:text-gray-700">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h3 class="font-semibold text-gray-800 mb-2">Document: ${doc.originalName}</h3>
+                            <p class="text-sm text-gray-600">Type: ${doc.fileType.toUpperCase()} • Analyzed: ${new Date(analysis.analyzedAt).toLocaleString()}</p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-blue-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-blue-800 mb-2">Category</h4>
+                                <p class="text-blue-700">${analysis.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
+                            </div>
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-green-800 mb-2">Confidence</h4>
+                                <p class="text-green-700">${analysis.confidence}%</p>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">Keywords</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${analysis.keywords.map(keyword => 
+                                    `<span class="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-sm">${keyword}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">Description</h4>
+                            <p class="text-gray-700 bg-gray-50 p-3 rounded-lg">${analysis.description}</p>
+                        </div>
+
+                        ${analysis.mainPoints && analysis.mainPoints.length > 0 ? `
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">Main Points</h4>
+                            <ul class="list-disc list-inside text-gray-700 space-y-1">
+                                ${analysis.mainPoints.map(point => `<li>${point}</li>`).join('')}
+                            </ul>
+                        </div>
+                        ` : ''}
+
+                        ${analysis.error ? `
+                        <div class="bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+                            <h4 class="font-semibold text-yellow-800 mb-1">Analysis Note</h4>
+                            <p class="text-yellow-700 text-sm">${analysis.error}</p>
+                        </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+
+            // Add modal to page
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+        }
+
+        function closeAnalysisModal() {
+            const modal = document.getElementById('analysisModal');
+            if (modal) {
+                modal.remove();
+            }
         }
     </script>
 </body>
