@@ -74,7 +74,13 @@
 
             <!-- AI Classification Section -->
             <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">AI Document Classification & Analysis</h3>
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">AI Document Classification & Analysis</h3>
+                    <button onclick="analyzeAllDocuments()" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold flex items-center gap-2">
+                        <span>🔍</span>
+                        Analyze All Documents
+                    </button>
+                </div>
                 <div id="classificationList">
                     <!-- Classifications will be loaded dynamically from uploaded documents -->
                 </div>
@@ -289,19 +295,23 @@
                     
                     // Add AI classification for each document
                     data.data.documents.forEach(doc => {
-                        const category = doc.aiAnalysis?.category || 'General Document';
-                        const confidence = doc.aiAnalysis?.confidence || '85%';
+                        const category = doc.aiAnalysis?.category || 'Uncategorized';
                         const keywords = doc.aiAnalysis?.keywords?.join(', ') || 'document, lab, information';
                         const description = doc.aiAnalysis?.description || 'Document uploaded to the knowledge base for AI analysis and retrieval.';
+                        
+                        // Format category name for display
+                        const formattedCategory = category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
                         
                         const classificationElement = document.createElement('div');
                         classificationElement.className = 'bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4';
                         classificationElement.innerHTML = `
-                            <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center justify-between mb-3">
                                 <span class="font-semibold text-gray-800">${doc.originalName}</span>
-                                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">${category}</span>
+                                <span class="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-medium">${formattedCategory}</span>
                             </div>
-                            <div class="text-sm text-gray-600 mb-2">Confidence: ${confidence} • Keywords: ${keywords}</div>
+                            <div class="text-sm text-gray-600 mb-3">
+                                <strong>Keywords:</strong> ${keywords}
+                            </div>
                             <div class="bg-white p-3 rounded-lg border-l-4 border-red-500">
                                 <p class="text-sm text-gray-700"><strong>Document Description:</strong> ${description}</p>
                             </div>
@@ -847,6 +857,103 @@
         }
 
         // AI Analysis Functions
+        async function analyzeAllDocuments() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('Please log in to analyze documents.');
+                    return;
+                }
+
+                // Get all documents first
+                const response = await fetch('https://labbrain-backend.onrender.com/api/documents', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                const data = await response.json();
+                
+                if (!data.success || !data.data.documents.length) {
+                    alert('No documents found to analyze.');
+                    return;
+                }
+
+                // Show loading state
+                const analyzeBtn = event.target;
+                const originalText = analyzeBtn.innerHTML;
+                analyzeBtn.innerHTML = '<span>⏳</span> Analyzing...';
+                analyzeBtn.disabled = true;
+                analyzeBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                analyzeBtn.classList.add('bg-gray-400');
+
+                // Get documents that haven't been analyzed yet
+                const unanalyzedDocs = data.data.documents.filter(doc => !doc.aiAnalysis || !doc.aiAnalysis.category);
+                
+                if (unanalyzedDocs.length === 0) {
+                    alert('All documents have already been analyzed!');
+                    analyzeBtn.innerHTML = originalText;
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.remove('bg-gray-400');
+                    analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                    return;
+                }
+
+                // Analyze each document
+                let successCount = 0;
+                let errorCount = 0;
+
+                for (const doc of unanalyzedDocs) {
+                    try {
+                        const analysisResponse = await fetch('https://labbrain-backend.onrender.com/api/ai/analyze', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ documentId: doc._id })
+                        });
+
+                        const analysisData = await analysisResponse.json();
+                        
+                        if (analysisData.success) {
+                            successCount++;
+                        } else {
+                            errorCount++;
+                        }
+                    } catch (error) {
+                        console.error(`Error analyzing document ${doc.originalName}:`, error);
+                        errorCount++;
+                    }
+                }
+
+                // Reset button
+                analyzeBtn.innerHTML = originalText;
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('bg-gray-400');
+                analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+
+                // Show results
+                if (successCount > 0) {
+                    alert(`Analysis complete! Successfully analyzed ${successCount} document(s).${errorCount > 0 ? ` ${errorCount} document(s) failed.` : ''}`);
+                    // Reload the classifications to show new results
+                    loadExistingDocuments();
+                } else {
+                    alert(`Analysis failed for all documents. Please try again.`);
+                }
+
+            } catch (error) {
+                console.error('Analyze all documents error:', error);
+                alert('Error analyzing documents: ' + error.message);
+                
+                // Reset button
+                const analyzeBtn = event.target;
+                analyzeBtn.innerHTML = '<span>🔍</span> Analyze All Documents';
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('bg-gray-400');
+                analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+            }
+        }
+
+        // AI Analysis Functions
         async function analyzeDocument(docId) {
             try {
                 const token = localStorage.getItem('token');
@@ -946,15 +1053,9 @@
                             <p class="text-sm text-gray-600">Type: ${doc.fileType.toUpperCase()} • Analyzed: ${new Date(analysis.analyzedAt).toLocaleString()}</p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div class="bg-blue-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-blue-800 mb-2">Category</h4>
-                                <p class="text-blue-700">${analysis.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
-                            </div>
-                            <div class="bg-green-50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-green-800 mb-2">Confidence</h4>
-                                <p class="text-green-700">${analysis.confidence}%</p>
-                            </div>
+                        <div class="mb-4">
+                            <h4 class="font-semibold text-gray-800 mb-2">Category</h4>
+                            <p class="text-gray-700 bg-gray-50 p-3 rounded-lg">${analysis.category.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</p>
                         </div>
 
                         <div class="mb-4">
