@@ -151,17 +151,15 @@
         </div>
     </div>
 
-    <!-- Upload Documents Modal -->
+    <!-- Upload Documents Modal (no drag-and-drop) -->
     <div id="uploadDocumentsModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-lg p-8 relative">
             <button class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500" onclick="closeUploadDocuments()">&times;</button>
             <h2 class="text-2xl font-bold mb-6">Upload Documents</h2>
-            <div class="upload-area rounded-xl p-8 text-center cursor-pointer border border-dashed border-red-400" onclick="document.getElementById('fileInput').click()">
-                <div class="text-5xl mb-4">📄</div>
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Drop files here or click to upload</h4>
-                <p class="text-gray-600">Support for PDF, DOC, DOCX, TXT files up to 10MB</p>
-                <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(event)">
-            </div>
+            <form id="uploadForm" onsubmit="handleFileUpload(event)">
+                <input type="file" id="fileInput" name="file" class="block w-full mb-4" accept=".pdf,.doc,.docx,.txt" required>
+                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Upload</button>
+            </form>
             <div id="uploadProgress" class="mt-4 hidden">
                 <div class="flex justify-between text-sm text-gray-600 mb-2">
                     <span>Uploading...</span>
@@ -433,10 +431,13 @@
         }
 
         async function handleFileUpload(event) {
-            const files = event.target.files;
+            event.preventDefault();
+            const fileInput = document.getElementById('fileInput');
+            const files = fileInput.files;
             if (files.length > 0) {
                 document.getElementById('uploadProgress').classList.remove('hidden');
                 await uploadFile(files[0]);
+                fileInput.value = '';
             }
         }
 
