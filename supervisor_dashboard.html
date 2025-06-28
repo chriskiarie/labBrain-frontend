@@ -52,7 +52,7 @@
 
         <!-- Quick Actions -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="openUpload()">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="openUploadDocuments()">
                 <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">📤</div>
                 <h3 class="text-lg font-semibold text-gray-800 mb-2">Upload Documents</h3>
                 <p class="text-gray-600">Add new procedures, standards, and guidelines to the knowledge base</p>
@@ -146,6 +146,29 @@
                 <div class="flex gap-3 items-center">
                     <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-red-500 outline-none" placeholder="Test the AI with questions about uploaded documents..." onkeypress="handleChatKeyPress(event)">
                     <button class="w-12 h-12 red-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Documents Modal -->
+    <div id="uploadDocumentsModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl shadow-lg w-full max-w-lg p-8 relative">
+            <button class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500" onclick="closeUploadDocuments()">&times;</button>
+            <h2 class="text-2xl font-bold mb-6">Upload Documents</h2>
+            <div class="upload-area rounded-xl p-8 text-center cursor-pointer border border-dashed border-red-400" onclick="document.getElementById('fileInput').click()">
+                <div class="text-5xl mb-4">📄</div>
+                <h4 class="text-lg font-semibold text-gray-800 mb-2">Drop files here or click to upload</h4>
+                <p class="text-gray-600">Support for PDF, DOC, DOCX, TXT files up to 10MB</p>
+                <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(event)">
+            </div>
+            <div id="uploadProgress" class="mt-4 hidden">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                    <span>Uploading...</span>
+                    <span id="progressText">0%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div id="progressFill" class="red-gradient h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
                 </div>
             </div>
         </div>
@@ -317,8 +340,8 @@
             }
         }
 
-        function openUpload() {
-            document.getElementById('fileInput').click();
+        function openUploadDocuments() {
+            document.getElementById('uploadDocumentsModal').classList.remove('hidden');
         }
 
         function openChatModal() {
@@ -355,13 +378,22 @@
                     list.innerHTML = '<div class="text-center text-gray-500">No documents uploaded yet.</div>';
                     return;
                 }
-                let html = `<table class='w-full text-left'><thead><tr><th>File Name</th><th>Type</th><th>Date</th><th>Actions</th></tr></thead><tbody>`;
+                let html = `<table class='w-full text-left border'>
+                    <thead>
+                        <tr>
+                            <th class='p-2 border-b'>File Name</th>
+                            <th class='p-2 border-b'>Type</th>
+                            <th class='p-2 border-b'>Date</th>
+                            <th class='p-2 border-b'>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
                 data.data.documents.forEach(doc => {
-                    html += `<tr class='border-b'>
-                        <td>${doc.originalName}</td>
-                        <td>${doc.fileType.toUpperCase()}</td>
-                        <td>${new Date(doc.createdAt).toLocaleString()}</td>
-                        <td>
+                    html += `<tr class='border-b hover:bg-gray-50'>
+                        <td class='p-2'>${doc.originalName}</td>
+                        <td class='p-2'>${doc.fileType.toUpperCase()}</td>
+                        <td class='p-2'>${new Date(doc.createdAt).toLocaleString()}</td>
+                        <td class='p-2'>
                             <a href="https://labbrain-backend.onrender.com/uploads/${doc.filename}" target="_blank" class="text-blue-600 underline mr-2">Open</a>
                             <button onclick="deleteDocumentFromManage('${doc._id}')" class="text-red-600 underline">Delete</button>
                         </td>
@@ -650,6 +682,10 @@
             else {
                 return "As a supervisor, I have access to all the documents you've uploaded to the knowledge base. I can provide detailed, accurate responses based on the ISO 17025 procedures, troubleshooting guides, and quality control standards. What specific aspect would you like me to explain?";
             }
+        }
+
+        function closeUploadDocuments() {
+            document.getElementById('uploadDocumentsModal').classList.add('hidden');
         }
     </script>
 </body>
