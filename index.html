@@ -1,139 +1,140 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LabBrain Login</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts - Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LabBrain Login</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Google Fonts - Inter -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script src="config.js"></script>
 </head>
 <body>
-    <!-- Top Centered KEBS Header -->
-    <header class="kebs-header">
-        <img src="assets/KEBS_LOGO.jpg" alt="KEBS Logo" class="kebs-header-logo">
-    </header>
+<!-- Top Centered KEBS Header -->
+<header class="kebs-header">
+<img src="KEBS_LOGO.jpg" alt="KEBS Logo" class="kebs-header-logo">
+</header>
 
-    <!-- Back Arrow Button -->
-    <button id="backArrow" class="back-arrow" onclick="goBackToRoleSelection()" style="display:none;" aria-label="Back to role selection">
-        &#8592;
-    </button>
+<!-- Back Arrow Button -->
+<button id="backArrow" class="back-arrow" onclick="goBackToRoleSelection()" style="display:none;" aria-label="Back to role selection">
+&#8592;
+</button>
 
-    <!-- Main Content Container -->
-    <div class="main-container">
-        <!-- Role Selection Section -->
-        <div id="roleSelectionSection" class="role-selection-section">
-            <div class="content-card">
-                <div class="brand-section">
-                    <div class="brand-title-container">
-                        <img src="assets/BRAIN.png" alt="Brain Icon" class="brain-icon">
-                        <h1 class="brand-title">LabBrain</h1>
-                    </div>
-                    <p class="brand-subtitle">DC/LF Metrology and Calibration Lab</p>
-                    <p class="brand-description">
-                        Your intelligent assistant for accessing procedures, standards, and troubleshooting guides.
-                    </p>
-                </div>
-                
-                <div class="role-options">
-                    <div class="role-card" onclick="selectRole('user')">
-                        <div class="role-icon">
-                            <img src="assets/LAB USER.png" alt="Lab User" class="role-image">
-                        </div>
-                        <h3 class="role-title">Lab User</h3>
-                        <p class="role-description">Access procedures, standards, and troubleshooting guides</p>
-                    </div>
-                    
-                    <div class="role-card supervisor-card" onclick="selectRole('supervisor')">
-                        <div class="role-icon">
-                            <img src="assets/SUPERVISOR.png" alt="Lab Supervisor" class="role-image">
-                        </div>
-                        <h3 class="role-title">Lab Supervisor</h3>
-                        <p class="role-description">Manage knowledge base and quality assurance oversight</p>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Main Content Container -->
+<div class="main-container">
+<!-- Role Selection Section -->
+<div id="roleSelectionSection" class="role-selection-section">
+<div class="content-card">
+<div class="brand-section">
+<div class="brand-title-container">
+<img src="BRAIN.png" alt="Brain Icon" class="brain-icon">
+<h1 class="brand-title">LabBrain</h1>
+</div>
+<p class="brand-subtitle">DC/LF Metrology and Calibration Lab</p>
+<p class="brand-description">
+Your intelligent assistant for accessing procedures, standards, and troubleshooting guides.
+</p>
+</div>
 
-        <!-- Login Form Section -->
-        <div id="loginFormContainer" class="login-form-container">
-            <div class="login-card">
-                <h2 id="formTitle" class="login-title">Login</h2>
-                <form id="loginForm" onsubmit="handleLogin(event)">
-                    <div class="input-group">
-                        <label for="username" class="input-label">User ID</label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            class="form-input"
-                            required
-                        >
-                    </div>
-                    <div class="input-group">
-                        <label for="password" class="input-label">Password</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            class="form-input"
-                            required
-                        >
-                    </div>
-                    <button type="submit" class="login-button">
-                        Sign In
-                    </button>
-                </form>
-                <p class="help-text">
-                    For access issues, please contact IT support.
-                </p>
-            </div>
-        </div>
-    </div>
+<div class="role-options">
+<div class="role-card" onclick="selectRole('user')">
+<div class="role-icon">
+<img src="LAB USER.png" alt="Lab User" class="role-image">
+</div>
+<h3 class="role-title">Lab User</h3>
+<p class="role-description">Access procedures, standards, and troubleshooting guides</p>
+</div>
 
-    <!-- Custom Message Box -->
-    <div id="messageBox" class="message-info"></div>
+<div class="role-card supervisor-card" onclick="selectRole('supervisor')">
+<div class="role-icon">
+<img src="SUPERVISOR.png" alt="Lab Supervisor" class="role-image">
+</div>
+<h3 class="role-title">Lab Supervisor</h3>
+<p class="role-description">Manage knowledge base and quality assurance oversight</p>
+</div>
+</div>
+</div>
+</div>
 
-    <script>
-        const roleSelectionSection = document.getElementById('roleSelectionSection');
-        const loginFormContainer = document.getElementById('loginFormContainer');
-        const formTitle = document.getElementById('formTitle');
-        const messageBox = document.getElementById('messageBox');
-        const backArrow = document.getElementById('backArrow');
+<!-- Login Form Section -->
+<div id="loginFormContainer" class="login-form-container">
+<div class="login-card">
+<h2 id="formTitle" class="login-title">Login</h2>
+<form id="loginForm" onsubmit="handleLogin(event)">
+<div class="input-group">
+<label for="username" class="input-label">User ID</label>
+<input
+type="text"
+id="username"
+name="username"
+class="form-input"
+required
+>
+</div>
+<div class="input-group">
+<label for="password" class="input-label">Password</label>
+<input
+type="password"
+id="password"
+name="password"
+class="form-input"
+required
+>
+</div>
+<button type="submit" class="login-button">
+Sign In
+</button>
+</form>
+<p class="help-text">
+For access issues, please contact IT support.
+</p>
+</div>
+</div>
+</div>
 
-        let selectedRole = '';
+<!-- Custom Message Box -->
+<div id="messageBox" class="message-info"></div>
 
-        function selectRole(role) {
-            selectedRole = role;
-            roleSelectionSection.style.display = 'none';
-            
-            // Add appropriate background class based on role
-            loginFormContainer.className = 'login-form-container';
-            if (role === 'user') {
-                formTitle.textContent = 'Lab User Login';
-                loginFormContainer.classList.add('user-login');
-            } else {
-                formTitle.textContent = 'Lab Supervisor Login';
-                loginFormContainer.classList.add('supervisor-login');
-            }
-            
-            setTimeout(() => {
-                loginFormContainer.classList.add('show');
-                backArrow.style.display = 'block';
-            }, 300);
-        }
+<script>
+const roleSelectionSection = document.getElementById('roleSelectionSection');
+const loginFormContainer = document.getElementById('loginFormContainer');
+const formTitle = document.getElementById('formTitle');
+const messageBox = document.getElementById('messageBox');
+const backArrow = document.getElementById('backArrow');
 
-        function goBackToRoleSelection() {
-            loginFormContainer.classList.remove('show', 'user-login', 'supervisor-login');
-            backArrow.style.display = 'none';
-            
-            setTimeout(() => {
-                roleSelectionSection.style.display = 'block';
-                selectedRole = '';
-            }, 300);
-        }
+let selectedRole = '';
+
+function selectRole(role) {
+selectedRole = role;
+roleSelectionSection.style.display = 'none';
+
+// Add appropriate background class based on role
+loginFormContainer.className = 'login-form-container';
+if (role === 'user') {
+formTitle.textContent = 'Lab User Login';
+loginFormContainer.classList.add('user-login');
+} else {
+formTitle.textContent = 'Lab Supervisor Login';
+loginFormContainer.classList.add('supervisor-login');
+}
+
+setTimeout(() => {
+loginFormContainer.classList.add('show');
+backArrow.style.display = 'block';
+}, 300);
+}
+
+function goBackToRoleSelection() {
+loginFormContainer.classList.remove('show', 'user-login', 'supervisor-login');
+backArrow.style.display = 'none';
+
+setTimeout(() => {
+roleSelectionSection.style.display = 'block';
+selectedRole = '';
+}, 300);
+}
 
         async function handleLogin(event) {
             event.preventDefault();
@@ -142,7 +143,7 @@
             const password = document.getElementById('password').value;
 
             try {
-                const response = await fetch('https://labbrain-backend.onrender.com/api/auth/login', {
+                const response = await fetch(`${LabBrainConfig.apiUrl}/api/auth/login`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username, password })
@@ -162,24 +163,50 @@
                             window.location.href = 'lab_user_dashboard.html';
                         }
                     }, 1500);
-                } else {
+async function handleLogin(event) {
+    event.preventDefault();
+
+    // Show loader
+    document.getElementById('loader').style.display = 'flex';
+
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    try {
+        const response = await fetch(`${LabBrainConfig.apiUrl}/api/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+        const data = await response.json();
+
+        if (data.success && data.data && data.data.token && data.data.user) {
+            // Save token to localStorage
+            localStorage.setItem('token', data.data.token);
+            localStorage.setItem('user', JSON.stringify(data.data.user));
+
+            showMessage('Login successful! Redirecting...', 'success');
+            setTimeout(() => {
+                if (data.data.user.role === 'supervisor') {
+                    window.location.href = 'supervisor_dashboard.html';
+} else {
                     showMessage(data.message || 'Invalid User ID or Password. Please try again.', 'error');
-                }
+                    window.location.href = 'lab_user_dashboard.html';
+}
             } catch (error) {
                 showMessage('Server error. Please try again later.', 'error');
             }
-        }
+            }, 1500);
+        } else {
+            showMessage(data.message || 'Invalid User ID or Password. Please try again.', 'error');
+}
+    } catch (error) {
+        showMessage('Server error. Please try again later.', 'error');
+    } finally {
+        // Hide loader
+        document.getElementById('loader').style.display = 'none';
+    }
+}
 
-        function showMessage(message, type = 'info') {
-            const messageBox = document.getElementById('messageBox');
-            messageBox.textContent = message;
-            messageBox.className = `message-box ${type === 'success' ? 'message-success' : type === 'error' ? 'message-error' : 'message-info'}`;
-            messageBox.classList.add('show');
-
-            setTimeout(() => {
-                messageBox.classList.remove('show');
-            }, 3000);
-        }
-    </script>
-</body>
-</html>
+function showMessage(message, type = 'info') {
+const messageBox = document.getElementById('messageBox');
