@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabBrain - Lab User Dashboard</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .dashboard-header {
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 0 2rem;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .dashboard-logo {
+            height: 60px;
+            width: auto;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            padding: 2rem;
+            background: #f8fafc;
+            min-height: calc(100vh - 80px);
+        }
+        
+        .welcome-section {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+        }
+        
+        .topic-filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .topic-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .topic-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+        
+        .topic-card.active {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.15);
+        }
+        
+        .topic-icon {
+            width: 48px;
+            height: 48px;
+            background: #f0f9ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            color: #3b82f6;
+            font-size: 1.5rem;
+        }
+        
+        .topic-card.active .topic-icon {
+            background: #3b82f6;
+            color: white;
+        }
+        
+        .topic-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+        
+        .topic-card.active .topic-title {
+            color: #1d4ed8;
+        }
+        
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.2s ease;
+        }
+        
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* Main Chat Area */
+        .chat-container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+            height: 600px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-header h3 {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .current-topic {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            background: #f8fafc;
+        }
+
+        .message {
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .message.bot .message-avatar {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 1rem 1.25rem;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+        }
+
+        .message.bot .message-content {
+            background: white;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .chat-input {
+            padding: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            background: white;
+        }
+
+        .chat-input-container {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .chat-input-field {
+            flex: 1;
+            padding: 1rem 1.25rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 25px;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.2s ease;
+            background: #f9fafb;
+        }
+
+        .chat-input-field:focus {
+            border-color: #3b82f6;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+        }
+
+        .send-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .typing-indicator {
+            display: none;
+            padding: 1rem 1.25rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            max-width: 75%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .typing-dots {
+            display: inline-block;
+        }
+
+        .typing-dots::after {
+            content: '';
+            animation: typing 1.5s infinite;
+        }
+
+        @keyframes typing {
+            0%, 20% { content: ''; }
+            40% { content: '.'; }
+            60% { content: '..'; }
+            80%, 100% { content: '...'; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dashboard Header -->
+    <header class="dashboard-header">
+        <div class="flex items-center gap-4">
+            <img src="assets/KEBS_LOGO.jpg" alt="KEBS Logo" class="dashboard-logo">
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">LabBrain</h1>
+                <p class="text-sm text-gray-600">AI-Powered Lab Assistant</p>
+            </div>
+        </div>
+        
+        <div class="user-info">
+            <div class="text-right">
+                <p class="font-semibold text-gray-800">Welcome, Chris</p>
+                <p class="text-sm text-gray-600">Lab User</p>
+            </div>
+            <div class="user-avatar">C</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Welcome Section -->
+        <div class="welcome-section">
+            <h2 class="text-2xl font-bold mb-2">Ask LabBrain AI Assistant</h2>
+            <p class="text-blue-100">Select a topic below or ask me anything about lab procedures, equipment, standards, and more!</p>
+        </div>
+
+        <!-- Topic Filters -->
+        <div class="topic-filters">
+            <div class="topic-card active" onclick="setTopic('general')">
+                <div class="topic-icon">🤖</div>
+                <h3 class="topic-title">General Assistant</h3>
+            </div>
+            
+            <div class="topic-card" onclick="setTopic('procedures')">
+                <div class="topic-icon">📋</div>
+                <h3 class="topic-title">Lab Procedures</h3>
+            </div>
+            
+            <div class="topic-card" onclick="setTopic('standards')">
+                <div class="topic-icon">📏</div>
+                <h3 class="topic-title">Standards & Guidelines</h3>
+            </div>
+            
+            <div class="topic-card" onclick="setTopic('troubleshooting')">
+                <div class="topic-icon">🔧</div>
+                <h3 class="topic-title">Troubleshooting</h3>
+            </div>
+            
+            <div class="topic-card" onclick="setTopic('reports')">
+                <div class="topic-icon">📊</div>
+                <h3 class="topic-title">Reports & Data</h3>
+            </div>
+        </div>
+
+        <!-- Main Chat Area -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <div>
+                    <h3>LabBrain AI Assistant</h3>
+                    <div class="current-topic">Current Mode: <span id="currentTopic">General Assistant</span></div>
+                </div>
+            </div>
+            
+            <div id="chatMessages" class="chat-messages">
+                <div class="message bot">
+                    <div class="message-avatar">AI</div>
+                    <div class="message-content">
+                        Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. 
+                        <br><br>
+                        <strong>Select a topic above to focus my responses, or ask me anything in general mode!</strong>
+                        <br><br>
+                        What can I help you with today?
+                    </div>
+                </div>
+            </div>
+            
+            <div id="typingIndicator" class="typing-indicator">
+                <span class="typing-dots">AI is typing</span>
+            </div>
+            
+            <div class="chat-input">
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" class="chat-input-field" placeholder="Ask me anything about lab procedures, equipment, standards..." onkeypress="handleChatKeyPress(event)">
+                    <button class="send-button" onclick="sendMessage()">
+                        ➤
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Load user data from localStorage
+        let currentUser = null;
+        
+        function loadUserData() {
+            const userData = localStorage.getItem('user');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                updateUserDisplay();
+            } else {
+                // Redirect to login if no user data
+                window.location.href = 'Main.html';
+            }
+        }
+        
+        function updateUserDisplay() {
+            if (currentUser) {
+                // Update welcome message
+                const welcomeElement = document.querySelector('.text-right p:first-child');
+                if (welcomeElement) {
+                    welcomeElement.textContent = `Welcome, ${currentUser.fullName || currentUser.username}`;
+                }
+                
+                // Update role display
+                const roleElement = document.querySelector('.text-right p:last-child');
+                if (roleElement) {
+                    roleElement.textContent = currentUser.role === 'supervisor' ? 'Lab Supervisor' : 'Lab User';
+                }
+                
+                // Update avatar initial
+                const avatarElement = document.querySelector('.user-avatar');
+                if (avatarElement) {
+                    avatarElement.textContent = (currentUser.fullName || currentUser.username).charAt(0).toUpperCase();
+                }
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            window.location.href = 'Main.html';
+        }
+        
+        // Load user data when page loads
+        document.addEventListener('DOMContentLoaded', loadUserData);
+        
+        let currentTopic = 'general';
+        let messageHistory = [];
+
+        function setTopic(topic) {
+            currentTopic = topic;
+            
+            // Update active card
+            document.querySelectorAll('.topic-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+            
+            // Update topic display
+            const topicNames = {
+                'general': 'General Assistant',
+                'procedures': 'Lab Procedures',
+                'standards': 'Standards & Guidelines',
+                'troubleshooting': 'Equipment Troubleshooting',
+                'reports': 'Reports & Data'
+            };
+            document.getElementById('currentTopic').textContent = topicNames[topic];
+            
+            // Add topic change message
+            addMessage(`Switched to ${topicNames[topic]} mode. Ask me anything about ${topicNames[topic].toLowerCase()}!`, 'bot');
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            // Add user message
+            addMessage(message, 'user');
+            input.value = '';
+            
+            // Show typing indicator
+            showTypingIndicator();
+            
+            try {
+                // Get token from localStorage
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    hideTypingIndicator();
+                    addMessage('Please log in to use the AI chat.', 'bot');
+                    return;
+                }
+                
+                // Call the AI backend
+                const response = await fetch('https://labbrain-backend.onrender.com/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                
+                hideTypingIndicator();
+                
+                if (data.success) {
+                    addMessage(data.data.response, 'bot');
+                    
+                    // Add source information if available
+                    if (data.data.sources && data.data.sources.length > 0) {
+                        const sources = data.data.sources.map(s => s.title).join(', ');
+                        addMessage(`📚 Sources: ${sources}`, 'system');
+                    }
+                } else {
+                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                console.error('Chat error:', error);
+            }
+        }
+
+        function addMessage(content, sender) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = sender === 'user' ? 'C' : 'AI';
+            
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.textContent = content;
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Store in history
+            messageHistory.push({ content, sender, timestamp: new Date(), topic: currentTopic });
+        }
+
+        function showTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.style.display = 'block';
+            const chatMessages = document.getElementById('chatMessages');
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            indicator.style.display = 'none';
+        }
+
+        function generateAIResponse(userMessage, topic) {
+            const message = userMessage.toLowerCase();
+            
+            // Topic-specific responses
+            if (topic === 'procedures') {
+                if (message.includes('calibration') || message.includes('calibrate')) {
+                    return "📋 **Calibration Procedure (ISO 17025 Compliant):**\n\n1. **Pre-calibration Setup:**\n   - Verify equipment is clean and stable\n   - Check environmental conditions (temperature, humidity)\n   - Prepare calibration standards\n\n2. **Calibration Process:**\n   - Perform zero adjustment\n   - Measure at multiple points across range\n   - Record all measurements with uncertainties\n\n3. **Documentation:**\n   - Complete calibration certificate\n   - Record measurement uncertainties\n   - Note any deviations or adjustments\n\nWould you like the specific procedure for a particular piece of equipment?";
+                }
+                else if (message.includes('sop') || message.includes('standard operating')) {
+                    return "📋 **Standard Operating Procedures Available:**\n\n• **Equipment Operation SOPs:**\n  - Spectrophotometer operation\n  - pH meter calibration\n  - Balance verification\n  - Temperature monitoring\n\n• **Safety SOPs:**\n  - Chemical handling\n  - Personal protective equipment\n  - Emergency procedures\n  - Waste disposal\n\n• **Quality Control SOPs:**\n  - Sample preparation\n  - Data recording\n  - Quality checks\n  - Deviation handling\n\nWhich specific SOP do you need?";
+                }
+                else {
+                    return "📋 I'm in **Lab Procedures** mode. I can help you with:\n\n• Equipment calibration procedures\n• Standard Operating Procedures (SOPs)\n• Safety protocols\n• Quality control procedures\n• Sample preparation methods\n• Data recording procedures\n\nWhat specific procedure do you need help with?";
+                }
+            }
+            else if (topic === 'standards') {
+                if (message.includes('iso') || message.includes('17025')) {
+                    return "📏 **ISO 17025:2017 Standards Overview:**\n\n**Management Requirements:**\n• Document control\n• Management system\n• Service to client\n• Complaints and appeals\n• Control of records\n• Internal audits\n• Management reviews\n\n**Technical Requirements:**\n• Personnel competence\n• Accommodation and environmental conditions\n• Equipment and reference materials\n• Metrological traceability\n• Sampling and handling\n• Assuring quality of results\n• Reporting results\n\nWhich specific aspect of ISO 17025 do you need details on?";
+                }
+                else if (message.includes('quality') || message.includes('assurance')) {
+                    return "📏 **Quality Assurance Standards:**\n\n• **Internal Quality Control:**\n  - Regular monitoring of measurement processes\n  - Use of control charts\n  - Participation in proficiency testing\n\n• **External Quality Assessment:**\n  - Inter-laboratory comparisons\n  - Proficiency testing programs\n  - Accreditation requirements\n\n• **Documentation Standards:**\n  - Method validation requirements\n  - Uncertainty calculations\n  - Result reporting formats\n\nWhat specific quality standard are you looking for?";
+                }
+                else {
+                    return "📏 I'm in **Standards & Guidelines** mode. I can help you with:\n\n• ISO 17025:2017 requirements\n• Quality assurance standards\n• Metrological traceability\n• Uncertainty calculations\n• Accreditation requirements\n• Regulatory compliance\n• Best practices and guidelines\n\nWhat standard or guideline do you need information about?";
+                }
+            }
+            else if (topic === 'troubleshooting') {
+                if (message.includes('error') || message.includes('problem') || message.includes('issue')) {
+                    return "🔧 **Equipment Troubleshooting Guide:**\n\n**Common Issues & Solutions:**\n\n1. **Equipment Not Powering On:**\n   - Check power supply and connections\n   - Verify circuit breakers\n   - Test with different outlet\n\n2. **Inaccurate Readings:**\n   - Check calibration status\n   - Verify environmental conditions\n   - Clean sensors/probes\n   - Check for interference\n\n3. **Error Messages:**\n   - Note exact error code/message\n   - Check user manual\n   - Verify input parameters\n   - Contact technical support if needed\n\nPlease describe the specific problem you're experiencing for more targeted help.";
+                }
+                else if (message.includes('maintenance') || message.includes('preventive')) {
+                    return "🔧 **Preventive Maintenance Schedule:**\n\n**Daily Checks:**\n• Visual inspection for damage\n• Basic functionality tests\n• Environmental monitoring\n\n**Weekly Checks:**\n• Calibration verification\n• Performance checks\n• Cleaning procedures\n\n**Monthly Checks:**\n• Detailed calibration\n• Performance validation\n• Documentation review\n\n**Quarterly Checks:**\n• Comprehensive maintenance\n• Software updates\n• Staff training verification\n\nWhat equipment maintenance do you need help with?";
+                }
+                else {
+                    return "🔧 I'm in **Equipment Troubleshooting** mode. I can help you with:\n\n• Equipment error diagnosis\n• Performance issues\n• Calibration problems\n• Preventive maintenance\n• Repair procedures\n• Technical specifications\n• User manual guidance\n\nWhat equipment problem are you experiencing?";
+                }
+            }
+            else if (topic === 'reports') {
+                if (message.includes('generate') || message.includes('create') || message.includes('report')) {
+                    return "📊 **Report Generation Guide:**\n\n**Available Report Types:**\n\n1. **Calibration Reports:**\n   - Equipment identification\n   - Calibration results\n   - Measurement uncertainties\n   - Traceability information\n\n2. **Test Reports:**\n   - Sample information\n   - Test methods used\n   - Results with uncertainties\n   - Compliance statements\n\n3. **Quality Control Reports:**\n   - Control chart data\n   - Trend analysis\n   - Outlier identification\n   - Corrective actions\n\n4. **Trend Analysis Reports:**\n   - Historical data analysis\n   - Performance trends\n   - Statistical analysis\n   - Recommendations\n\nWhat type of report do you need to generate?";
+                }
+                else if (message.includes('data') || message.includes('analysis')) {
+                    return "📊 **Data Analysis Tools Available:**\n\n• **Statistical Analysis:**\n  - Mean, standard deviation\n  - Confidence intervals\n  - Trend analysis\n  - Outlier detection\n\n• **Graphical Representations:**\n  - Control charts\n  - Histograms\n  - Scatter plots\n  - Time series analysis\n\n• **Quality Metrics:**\n  - Process capability\n  - Measurement system analysis\n  - Uncertainty budgets\n  - Proficiency test results\n\nWhat type of data analysis do you need?";
+                }
+                else {
+                    return "📊 I'm in **Reports & Data** mode. I can help you with:\n\n• Report generation and templates\n• Data analysis and statistics\n• Quality control reporting\n• Trend analysis\n• Performance metrics\n• Compliance reporting\n• Data visualization\n\nWhat reporting or data analysis do you need help with?";
+                }
+            }
+            else {
+                // General mode responses
+                if (message.includes('calibration') || message.includes('calibrate')) {
+                    return "For equipment calibration, please follow ISO 17025 standards. The calibration procedure involves: 1) Pre-calibration checks, 2) Standard measurements, 3) Uncertainty calculations, and 4) Documentation. Would you like me to show you the specific procedure for your equipment?";
+                }
+                else if (message.includes('procedure') || message.includes('sop')) {
+                    return "I can help you find the right Standard Operating Procedure (SOP). What type of procedure are you looking for? Common categories include: Equipment Operation, Safety Protocols, Quality Control, and Data Analysis.";
+                }
+                else if (message.includes('troubleshoot') || message.includes('problem') || message.includes('issue')) {
+                    return "I can help you troubleshoot equipment issues. Please describe the problem you're experiencing, including any error messages or unusual behavior. I'll guide you through the diagnostic process.";
+                }
+                else if (message.includes('standard') || message.includes('iso') || message.includes('guideline')) {
+                    return "Our lab follows ISO 17025:2017 standards for testing and calibration laboratories. Key areas include: Management Requirements, Technical Requirements, and Quality Assurance. Which specific standard are you interested in?";
+                }
+                else if (message.includes('report') || message.includes('data')) {
+                    return "I can help you generate reports and analyze data. We have templates for: Calibration Reports, Test Reports, Quality Control Reports, and Trend Analysis. What type of report do you need?";
+                }
+                else if (message.includes('hello') || message.includes('hi')) {
+                    return "Hello! I'm here to help you with all your lab-related questions. Feel free to ask about procedures, equipment, standards, or any other lab topics!";
+                }
+                else if (message.includes('help')) {
+                    return "I can help you with: 📋 Lab Procedures, 📏 Standards & Guidelines, 🔧 Equipment Troubleshooting, 📊 Reports & Data Analysis, and general lab questions. What would you like to know?";
+                }
+                else {
+                    return "I understand you're asking about '" + userMessage + "'. While I'm a demo version, I can help with lab procedures, equipment troubleshooting, standards compliance, and general lab questions. Could you rephrase your question or ask about a specific lab topic?";
+                }
+            }
+        }
+
+        // Check if user is logged in
+        window.onload = function() {
+            // In a real application, you would check for authentication tokens
+            // For now, we'll just ensure they came from the login page
+            // Commenting out this check as it's causing issues
+            /*
+            if (!document.referrer.includes('Main.html')) {
+                // Redirect to login if not coming from main page
+                window.location.href = 'Main.html';
+            }
+            */
+        }
+    </script>
+</body>
+</html> 
