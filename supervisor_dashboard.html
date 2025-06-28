@@ -77,26 +77,6 @@
             </div>
         </div>
 
-        <!-- Document Upload Section -->
-        <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200 mb-8">
-            <h3 class="text-xl font-bold text-gray-800 mb-4">Document Upload</h3>
-            <div class="upload-area rounded-xl p-8 text-center cursor-pointer" onclick="document.getElementById('fileInput').click()">
-                <div class="text-5xl mb-4">📄</div>
-                <h4 class="text-lg font-semibold text-gray-800 mb-2">Drop files here or click to upload</h4>
-                <p class="text-gray-600">Support for PDF, DOC, DOCX, TXT files up to 10MB</p>
-                <input type="file" id="fileInput" class="hidden" multiple accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(event)">
-            </div>
-            <div id="uploadProgress" class="mt-4 hidden">
-                <div class="flex justify-between text-sm text-gray-600 mb-2">
-                    <span>Uploading...</span>
-                    <span id="progressText">0%</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div id="progressFill" class="red-gradient h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
-        </div>
-
         <!-- Document Management -->
         <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200 mb-8">
             <h3 class="text-xl font-bold text-gray-800 mb-4">Knowledge Base Documents</h3>
@@ -174,7 +154,7 @@
         </div>
     </div>
 
-    <!-- Add a modal for Manage Documents -->
+    <!-- Manage Documents Modal Table Format -->
     <div id="manageDocumentsModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-3xl p-8 relative">
             <button class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500" onclick="closeManageDocuments()">&times;</button>
