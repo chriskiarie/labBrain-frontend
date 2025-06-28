@@ -171,6 +171,43 @@
         </div>
     </div>
 
+    <!-- Chat Modal -->
+    <div id="chatModal" class="chat-modal">
+        <div class="chat-container">
+            <div class="red-gradient text-white p-6 flex items-center justify-between">
+                <h3 class="font-semibold text-lg">LabBrain AI Assistant - Supervisor Test Mode</h3>
+                <button class="text-white text-2xl hover:text-gray-200" onclick="closeChatModal()">×</button>
+            </div>
+            
+            <div id="chatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
+                <div class="flex items-start gap-3 mb-6">
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">AI</div>
+                    <div class="bg-white p-4 rounded-2xl border border-gray-200 max-w-3/4">
+                        Hello Christine! I'm in Supervisor Test Mode. I can access all the documents you've uploaded to the knowledge base. 
+                        <br><br>
+                        <strong>Available knowledge:</strong>
+                        <br>• ISO 17025 Calibration Procedures
+                        <br>• Equipment Troubleshooting Guide  
+                        <br>• Quality Control Standards
+                        <br><br>
+                        Test me with any questions about these documents or general lab topics!
+                    </div>
+                </div>
+            </div>
+            
+            <div id="typingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
+                <span class="typing-dots text-gray-600">AI is typing</span>
+            </div>
+            
+            <div class="p-6 border-t border-gray-200 bg-white">
+                <div class="flex gap-3 items-center">
+                    <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-red-500 outline-none" placeholder="Test the AI with questions about uploaded documents..." onkeypress="handleChatKeyPress(event)">
+                    <button class="w-12 h-12 red-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Load user data from localStorage
         let currentUser = null;
@@ -292,11 +329,15 @@
         }
 
         function openAIAssistant() {
-            document.getElementById('aiAssistantPage').classList.remove('hidden');
+            document.getElementById('chatModal').style.display = 'flex';
         }
 
         function closeAIAssistant() {
-            document.getElementById('aiAssistantPage').classList.add('hidden');
+            document.getElementById('chatModal').style.display = 'none';
+        }
+
+        function closeChatModal() {
+            document.getElementById('chatModal').style.display = 'none';
         }
 
         function viewDocuments() {
@@ -639,12 +680,18 @@
 
         function handleAIChatKeyPress(event) {
             if (event.key === 'Enter') {
-                sendAIMessage();
+                sendMessage();
+            }
+        }
+
+        function handleChatKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
             }
         }
 
         async function sendAIMessage() {
-            const input = document.getElementById('aiChatInput');
+            const input = document.getElementById('chatInput');
             const message = input.value.trim();
             
             if (message === '') return;
@@ -652,13 +699,13 @@
             addMessage(message, 'user');
             input.value = '';
             
-            document.getElementById('aiTypingIndicator').style.display = 'block';
+            document.getElementById('typingIndicator').style.display = 'block';
             
             try {
                 // Get token from localStorage
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    document.getElementById('aiTypingIndicator').style.display = 'none';
+                    document.getElementById('typingIndicator').style.display = 'none';
                     addMessage('Please log in to use the AI chat.', 'bot');
                     return;
                 }
@@ -675,7 +722,7 @@
                 
                 const data = await response.json();
                 
-                document.getElementById('aiTypingIndicator').style.display = 'none';
+                document.getElementById('typingIndicator').style.display = 'none';
                 
                 if (data.success) {
                     addMessage(data.data.response, 'bot');
@@ -689,14 +736,66 @@
                     addMessage('Sorry, I encountered an error. Please try again.', 'bot');
                 }
             } catch (error) {
-                document.getElementById('aiTypingIndicator').style.display = 'none';
+                document.getElementById('typingIndicator').style.display = 'none';
+                addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                console.error('Chat error:', error);
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (message === '') return;
+            
+            addMessage(message, 'user');
+            input.value = '';
+            
+            document.getElementById('typingIndicator').style.display = 'block';
+            
+            try {
+                // Get token from localStorage
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    document.getElementById('typingIndicator').style.display = 'none';
+                    addMessage('Please log in to use the AI chat.', 'bot');
+                    return;
+                }
+                
+                // Call the AI backend
+                const response = await fetch('https://labbrain-backend.onrender.com/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ message })
+                });
+                
+                const data = await response.json();
+                
+                document.getElementById('typingIndicator').style.display = 'none';
+                
+                if (data.success) {
+                    addMessage(data.data.response, 'bot');
+                    
+                    // Add source information if available
+                    if (data.data.sources && data.data.sources.length > 0) {
+                        const sources = data.data.sources.map(s => s.title).join(', ');
+                        addMessage(`📚 Sources: ${sources}`, 'system');
+                    }
+                } else {
+                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                }
+            } catch (error) {
+                document.getElementById('typingIndicator').style.display = 'none';
                 addMessage('Sorry, I encountered an error. Please try again.', 'bot');
                 console.error('Chat error:', error);
             }
         }
 
         function addMessage(content, sender) {
-            const chatMessages = document.getElementById('aiChatMessages');
+            const chatMessages = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'flex items-start gap-3 mb-6';
             if (sender === 'user') messageDiv.className += ' flex-row-reverse';
