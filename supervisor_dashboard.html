@@ -296,8 +296,19 @@
                                 <p class="text-sm">Upload documents to see AI classification and analysis.</p>
                             </div>
                         `;
+                        
+                        // Update Analyze button state
+                        updateAnalyzeButtonState(0, 0);
                         return;
                     }
+                    
+                    // Count analyzed vs unanalyzed documents
+                    const totalDocs = data.data.documents.length;
+                    const analyzedDocs = data.data.documents.filter(doc => doc.aiAnalysis && doc.aiAnalysis.category).length;
+                    const unanalyzedDocs = totalDocs - analyzedDocs;
+                    
+                    // Update Analyze button state
+                    updateAnalyzeButtonState(unanalyzedDocs, totalDocs);
                     
                     // Add AI classification for each document
                     data.data.documents.forEach(doc => {
@@ -337,6 +348,25 @@
                         <p class="text-sm">Please refresh the page to try again.</p>
                     </div>
                 `;
+            }
+        }
+
+        function updateAnalyzeButtonState(unanalyzedCount, totalCount) {
+            const analyzeBtn = document.querySelector('button[onclick="analyzeAllDocuments()"]');
+            if (!analyzeBtn) return;
+            
+            if (unanalyzedCount === 0) {
+                // All documents analyzed - show gray disabled state
+                analyzeBtn.innerHTML = '<span>✅</span> All Analyzed';
+                analyzeBtn.disabled = true;
+                analyzeBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
+                analyzeBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+            } else {
+                // Has unanalyzed documents - show green active state
+                analyzeBtn.innerHTML = `<span>🔍</span> Analyze (${unanalyzedCount})`;
+                analyzeBtn.disabled = false;
+                analyzeBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
             }
         }
 
@@ -883,6 +913,14 @@
                     return;
                 }
 
+                // Get documents that haven't been analyzed yet
+                const unanalyzedDocs = data.data.documents.filter(doc => !doc.aiAnalysis || !doc.aiAnalysis.category);
+                
+                if (unanalyzedDocs.length === 0) {
+                    alert('All documents have already been analyzed!');
+                    return;
+                }
+
                 // Show loading state
                 const analyzeBtn = document.querySelector('button[onclick="analyzeAllDocuments()"]');
                 const originalText = analyzeBtn.innerHTML;
@@ -891,19 +929,7 @@
                 analyzeBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
                 analyzeBtn.classList.add('bg-gray-400');
 
-                // Get documents that haven't been analyzed yet
-                const unanalyzedDocs = data.data.documents.filter(doc => !doc.aiAnalysis || !doc.aiAnalysis.category);
-                
-                if (unanalyzedDocs.length === 0) {
-                    alert('All documents have already been analyzed!');
-                    analyzeBtn.innerHTML = originalText;
-                    analyzeBtn.disabled = false;
-                    analyzeBtn.classList.remove('bg-gray-400');
-                    analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
-                    return;
-                }
-
-                // Analyze each document
+                // Analyze each unanalyzed document
                 let successCount = 0;
                 let errorCount = 0;
 
@@ -931,19 +957,18 @@
                     }
                 }
 
-                // Reset button
-                analyzeBtn.innerHTML = originalText;
-                analyzeBtn.disabled = false;
-                analyzeBtn.classList.remove('bg-gray-400');
-                analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
-
                 // Show results
                 if (successCount > 0) {
                     alert(`Analysis complete! Successfully analyzed ${successCount} document(s).${errorCount > 0 ? ` ${errorCount} document(s) failed.` : ''}`);
-                    // Reload the classifications to show new results
+                    // Reload the classifications to show new results and update button state
                     loadExistingDocuments();
                 } else {
                     alert(`Analysis failed for all documents. Please try again.`);
+                    // Reset button to original state
+                    analyzeBtn.innerHTML = originalText;
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.remove('bg-gray-400');
+                    analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
                 }
 
             } catch (error) {
