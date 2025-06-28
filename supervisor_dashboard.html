@@ -878,7 +878,7 @@
                 }
 
                 // Show loading state
-                const analyzeBtn = event.target;
+                const analyzeBtn = document.querySelector('button[onclick="analyzeAllDocuments()"]');
                 const originalText = analyzeBtn.innerHTML;
                 analyzeBtn.innerHTML = '<span>⏳</span> Analyzing...';
                 analyzeBtn.disabled = true;
@@ -945,11 +945,13 @@
                 alert('Error analyzing documents: ' + error.message);
                 
                 // Reset button
-                const analyzeBtn = event.target;
-                analyzeBtn.innerHTML = '<span>🔍</span> Analyze All Documents';
-                analyzeBtn.disabled = false;
-                analyzeBtn.classList.remove('bg-gray-400');
-                analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                const analyzeBtn = document.querySelector('button[onclick="analyzeAllDocuments()"]');
+                if (analyzeBtn) {
+                    analyzeBtn.innerHTML = '<span>🔍</span> Analyze All Documents';
+                    analyzeBtn.disabled = false;
+                    analyzeBtn.classList.remove('bg-gray-400');
+                    analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                }
             }
         }
 
