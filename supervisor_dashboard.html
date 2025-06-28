@@ -78,7 +78,7 @@
                     <h3 class="text-xl font-bold text-gray-800">AI Document Classification & Analysis</h3>
                     <button onclick="analyzeAllDocuments()" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold flex items-center gap-2">
                         <span>🔍</span>
-                        Analyze All Documents
+                        Analyze
                     </button>
                 </div>
                 <div id="classificationList">
@@ -116,14 +116,17 @@
                 <div class="flex items-start gap-3 mb-6">
                     <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">AI</div>
                     <div class="bg-white p-4 rounded-2xl border border-gray-200 max-w-3/4">
-                        Hello! I'm LabBrain AI Assistant in Supervisor Test Mode. I can access all the documents you've uploaded to the knowledge base. 
+                        Hello! I'm LabBrain AI Assistant. I can answer questions based on the documents you've uploaded and analyzed.
                         <br><br>
-                        <strong>Available knowledge:</strong>
-                        <br>• ISO 17025 Calibration Procedures
-                        <br>• Equipment Troubleshooting Guide  
-                        <br>• Quality Control Standards
+                        <strong>My Knowledge Base:</strong>
+                        <br>I have access to your uploaded documents and their AI analysis. I can help with questions about lab procedures, technical specifications, safety guidelines, and more.
                         <br><br>
-                        Test me with any questions about these documents or general lab topics!
+                        <strong>How to use me:</strong>
+                        <br>• Ask specific questions about your uploaded documents
+                        <br>• I'll search through the content and provide relevant answers
+                        <br>• I'll show you which documents I used as sources
+                        <br><br>
+                        Try asking me about any topic related to your uploaded documents!
                     </div>
                 </div>
             </div>
@@ -189,14 +192,17 @@
                 <div class="flex items-start gap-3 mb-6">
                     <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">AI</div>
                     <div class="bg-white p-4 rounded-2xl border border-gray-200 max-w-3/4">
-                        Hello Christine! I'm in Supervisor Test Mode. I can access all the documents you've uploaded to the knowledge base. 
+                        Hello! I'm LabBrain AI Assistant. I can answer questions based on the documents you've uploaded and analyzed.
                         <br><br>
-                        <strong>Available knowledge:</strong>
-                        <br>• ISO 17025 Calibration Procedures
-                        <br>• Equipment Troubleshooting Guide  
-                        <br>• Quality Control Standards
+                        <strong>My Knowledge Base:</strong>
+                        <br>I have access to your uploaded documents and their AI analysis. I can help with questions about lab procedures, technical specifications, safety guidelines, and more.
                         <br><br>
-                        Test me with any questions about these documents or general lab topics!
+                        <strong>How to use me:</strong>
+                        <br>• Ask specific questions about your uploaded documents
+                        <br>• I'll search through the content and provide relevant answers
+                        <br>• I'll show you which documents I used as sources
+                        <br><br>
+                        Try asking me about any topic related to your uploaded documents!
                     </div>
                 </div>
             </div>
@@ -947,7 +953,7 @@
                 // Reset button
                 const analyzeBtn = document.querySelector('button[onclick="analyzeAllDocuments()"]');
                 if (analyzeBtn) {
-                    analyzeBtn.innerHTML = '<span>🔍</span> Analyze All Documents';
+                    analyzeBtn.innerHTML = '<span>🔍</span> Analyze';
                     analyzeBtn.disabled = false;
                     analyzeBtn.classList.remove('bg-gray-400');
                     analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
