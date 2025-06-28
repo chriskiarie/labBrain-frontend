@@ -362,7 +362,7 @@
                         <td>${doc.fileType.toUpperCase()}</td>
                         <td>${new Date(doc.createdAt).toLocaleString()}</td>
                         <td>
-                            <a href="/uploads/${doc.filename}" target="_blank" class="text-blue-600 underline mr-2">Open</a>
+                            <a href="https://labbrain-backend.onrender.com/uploads/${doc.filename}" target="_blank" class="text-blue-600 underline mr-2">Open</a>
                             <button onclick="deleteDocumentFromManage('${doc._id}')" class="text-red-600 underline">Delete</button>
                         </td>
                     </tr>`;
