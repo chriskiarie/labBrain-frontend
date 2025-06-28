@@ -52,14 +52,14 @@
             </div>
 
             <!-- Quick Actions -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="openUploadDocuments()">
                     <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">📤</div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Upload Documents</h3>
                     <p class="text-gray-600">Add new procedures, standards, and guidelines to the knowledge base</p>
                 </div>
                 
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="openChatModal()">
+                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="openAIAssistant()">
                     <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">🤖</div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Test AI Assistant</h3>
                     <p class="text-gray-600">Launch the chatbot to test responses and verify knowledge integration</p>
@@ -69,20 +69,6 @@
                     <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">📁</div>
                     <h3 class="text-lg font-semibold text-gray-800 mb-2">Manage Documents</h3>
                     <p class="text-gray-600">View, edit, and organize existing documents in the knowledge base</p>
-                </div>
-                
-                <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer" onclick="viewAnalytics()">
-                    <div class="w-12 h-12 bg-red-50 rounded-xl flex items-center justify-center text-2xl mb-4">📊</div>
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">AI Analytics</h3>
-                    <p class="text-gray-600">Monitor AI performance and document classification insights</p>
-                </div>
-            </div>
-
-            <!-- Document Management -->
-            <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200 mb-8">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Knowledge Base Documents</h3>
-                <div id="documentList">
-                    <!-- Documents will be loaded dynamically from the server -->
                 </div>
             </div>
 
@@ -105,19 +91,26 @@
         </div>
     </div>
 
-    <!-- Chat Modal -->
-    <div id="chatModal" class="chat-modal">
-        <div class="chat-container">
+    <!-- Full-Page AI Assistant -->
+    <div id="aiAssistantPage" class="hidden">
+        <div class="h-screen flex flex-col">
+            <!-- AI Assistant Header -->
             <div class="red-gradient text-white p-6 flex items-center justify-between">
-                <h3 class="font-semibold text-lg">LabBrain AI Assistant - Supervisor Test Mode</h3>
-                <button class="text-white text-2xl hover:text-gray-200" onclick="closeChatModal()">×</button>
+                <div class="flex items-center gap-4">
+                    <h2 class="text-2xl font-bold">LabBrain AI Assistant</h2>
+                    <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">Supervisor Test Mode</span>
+                </div>
+                <button class="bg-white bg-opacity-20 text-white px-4 py-2 rounded-lg hover:bg-opacity-30 transition-colors" onclick="closeAIAssistant()">
+                    ← Back to Dashboard
+                </button>
             </div>
             
-            <div id="chatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
+            <!-- Chat Messages Area -->
+            <div id="aiChatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
                 <div class="flex items-start gap-3 mb-6">
                     <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">AI</div>
                     <div class="bg-white p-4 rounded-2xl border border-gray-200 max-w-3/4">
-                        Hello Christine! I'm in Supervisor Test Mode. I can access all the documents you've uploaded to the knowledge base. 
+                        Hello! I'm LabBrain AI Assistant in Supervisor Test Mode. I can access all the documents you've uploaded to the knowledge base. 
                         <br><br>
                         <strong>Available knowledge:</strong>
                         <br>• ISO 17025 Calibration Procedures
@@ -129,14 +122,16 @@
                 </div>
             </div>
             
-            <div id="typingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
+            <!-- Typing Indicator -->
+            <div id="aiTypingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
                 <span class="typing-dots text-gray-600">AI is typing</span>
             </div>
             
+            <!-- Chat Input Area -->
             <div class="p-6 border-t border-gray-200 bg-white">
                 <div class="flex gap-3 items-center">
-                    <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-red-500 outline-none" placeholder="Test the AI with questions about uploaded documents..." onkeypress="handleChatKeyPress(event)">
-                    <button class="w-12 h-12 red-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
+                    <input type="text" id="aiChatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-red-500 outline-none" placeholder="Test the AI with questions about uploaded documents..." onkeypress="handleAIChatKeyPress(event)">
+                    <button class="w-12 h-12 red-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendAIMessage()">➤</button>
                 </div>
             </div>
         </div>
@@ -239,23 +234,12 @@
                 const data = await response.json();
                 
                 if (data.success) {
-                    const documentList = document.getElementById('documentList');
                     const classificationList = document.getElementById('classificationList');
                     
-                    // Clear existing demo documents
-                    documentList.innerHTML = '';
+                    // Clear existing classifications
                     classificationList.innerHTML = '';
                     
                     if (data.data.documents.length === 0) {
-                        // Show message when no documents are found
-                        documentList.innerHTML = `
-                            <div class="text-center py-8 text-gray-500">
-                                <div class="text-4xl mb-4">📁</div>
-                                <h4 class="text-lg font-semibold mb-2">No documents uploaded yet</h4>
-                                <p class="text-sm">Upload your first document to get started with the knowledge base.</p>
-                            </div>
-                        `;
-                        
                         classificationList.innerHTML = `
                             <div class="text-center py-8 text-gray-500">
                                 <div class="text-4xl mb-4">🤖</div>
@@ -266,27 +250,8 @@
                         return;
                     }
                     
-                    // Add real documents
+                    // Add AI classification for each document
                     data.data.documents.forEach(doc => {
-                        const docElement = document.createElement('div');
-                        docElement.className = 'flex items-center justify-between p-4 border border-gray-200 rounded-lg mb-2 bg-gray-50 hover:bg-gray-100 transition-colors';
-                        docElement.innerHTML = `
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 bg-red-500 rounded-lg flex items-center justify-center text-white text-lg">📄</div>
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">${doc.originalName}</h4>
-                                    <p class="text-sm text-gray-600">${doc.fileType.toUpperCase()} • ${formatFileSize(doc.fileSize)} • Uploaded ${new Date(doc.createdAt).toLocaleDateString()}</p>
-                                    <p class="text-xs text-gray-500">Status: ${doc.status}</p>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600" onclick="editDocument('${doc._id}')">Edit</button>
-                                <button class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600" onclick="deleteDocument('${doc._id}')">Delete</button>
-                            </div>
-                        `;
-                        documentList.appendChild(docElement);
-                        
-                        // Add AI classification for each document
                         const category = doc.aiAnalysis?.category || 'General Document';
                         const confidence = doc.aiAnalysis?.confidence || '85%';
                         const keywords = doc.aiAnalysis?.keywords?.join(', ') || 'document, lab, information';
@@ -309,17 +274,8 @@
                 }
             } catch (error) {
                 console.error('Error loading documents:', error);
-                // Show error message in document list
-                const documentList = document.getElementById('documentList');
+                // Show error message in classification list
                 const classificationList = document.getElementById('classificationList');
-                
-                documentList.innerHTML = `
-                    <div class="text-center py-8 text-red-500">
-                        <div class="text-4xl mb-4">⚠️</div>
-                        <h4 class="text-lg font-semibold mb-2">Error loading documents</h4>
-                        <p class="text-sm">Please refresh the page to try again.</p>
-                    </div>
-                `;
                 
                 classificationList.innerHTML = `
                     <div class="text-center py-8 text-red-500">
@@ -335,12 +291,12 @@
             document.getElementById('uploadDocumentsModal').classList.remove('hidden');
         }
 
-        function openChatModal() {
-            document.getElementById('chatModal').style.display = 'flex';
+        function openAIAssistant() {
+            document.getElementById('aiAssistantPage').classList.remove('hidden');
         }
 
-        function closeChatModal() {
-            document.getElementById('chatModal').style.display = 'none';
+        function closeAIAssistant() {
+            document.getElementById('aiAssistantPage').classList.add('hidden');
         }
 
         function viewDocuments() {
@@ -414,7 +370,6 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Upload Date</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AI Analysis</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
@@ -454,16 +409,6 @@
                                 }">
                                     ${doc.status}
                                 </span>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                ${hasAnalysis ? 
-                                    `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                        ✅ Analyzed (${doc.aiAnalysis.confidence}%)
-                                    </span>` : 
-                                    `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                                        ⏳ Pending
-                                    </span>`
-                                }
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                 <div class="flex gap-2">
@@ -692,14 +637,14 @@
             }
         }
 
-        function handleChatKeyPress(event) {
+        function handleAIChatKeyPress(event) {
             if (event.key === 'Enter') {
-                sendMessage();
+                sendAIMessage();
             }
         }
 
-        async function sendMessage() {
-            const input = document.getElementById('chatInput');
+        async function sendAIMessage() {
+            const input = document.getElementById('aiChatInput');
             const message = input.value.trim();
             
             if (message === '') return;
@@ -707,13 +652,13 @@
             addMessage(message, 'user');
             input.value = '';
             
-            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('aiTypingIndicator').style.display = 'block';
             
             try {
                 // Get token from localStorage
                 const token = localStorage.getItem('token');
                 if (!token) {
-                    document.getElementById('typingIndicator').style.display = 'none';
+                    document.getElementById('aiTypingIndicator').style.display = 'none';
                     addMessage('Please log in to use the AI chat.', 'bot');
                     return;
                 }
@@ -730,7 +675,7 @@
                 
                 const data = await response.json();
                 
-                document.getElementById('typingIndicator').style.display = 'none';
+                document.getElementById('aiTypingIndicator').style.display = 'none';
                 
                 if (data.success) {
                     addMessage(data.data.response, 'bot');
@@ -744,14 +689,14 @@
                     addMessage('Sorry, I encountered an error. Please try again.', 'bot');
                 }
             } catch (error) {
-                document.getElementById('typingIndicator').style.display = 'none';
+                document.getElementById('aiTypingIndicator').style.display = 'none';
                 addMessage('Sorry, I encountered an error. Please try again.', 'bot');
                 console.error('Chat error:', error);
             }
         }
 
         function addMessage(content, sender) {
-            const chatMessages = document.getElementById('chatMessages');
+            const chatMessages = document.getElementById('aiChatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'flex items-start gap-3 mb-6';
             if (sender === 'user') messageDiv.className += ' flex-row-reverse';
