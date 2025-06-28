@@ -16,10 +16,47 @@
         .red-accent { color: #ef4444; }
         .upload-area { border: 2px dashed #ef4444; background: #fef2f2; }
         .chat-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
-        .chat-container { background: white; border-radius: 20px; width: 90%; max-width: 800px; height: 80vh; display: flex; flex-direction: column; overflow: hidden; }
+        .chat-container { background: white; border-radius: 20px; width: 98%; max-width: 700px; height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
+        @media (min-width: 768px) {
+            .chat-container { max-width: 900px; height: 85vh; }
+        }
         .typing-indicator { display: none; }
-        .typing-dots::after { content: ''; animation: typing 1.5s infinite; }
-        @keyframes typing { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
+        .typing-dots {
+            display: inline-block;
+            min-width: 2em;
+            letter-spacing: 2px;
+        }
+        .typing-dots span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            margin: 0 2px;
+            background: #ef4444;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: typing-bounce 1.2s infinite both;
+        }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing-bounce {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
+        .ai-avatar {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            min-height: 48px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            margin-right: 16px;
+        }
     </style>
 </head>
 <body class="red-theme">
@@ -190,7 +227,7 @@
             
             <div id="chatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
                 <div class="flex items-start gap-3 mb-6">
-                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">AI</div>
+                    <div class="ai-avatar">AI</div>
                     <div class="bg-white p-4 rounded-2xl border border-gray-200 max-w-3/4">
                         Hello! I'm LabBrain AI Assistant. I can answer questions based on the documents you've uploaded and analyzed.
                         <br><br>
@@ -208,7 +245,7 @@
             </div>
             
             <div id="typingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
-                <span class="typing-dots text-gray-600">AI is typing</span>
+                <span class="typing-dots"><span></span><span></span><span></span></span> <span class="text-gray-600">AI is typing</span>
             </div>
             
             <div class="p-6 border-t border-gray-200 bg-white">
@@ -847,9 +884,14 @@
             if (sender === 'user') messageDiv.className += ' flex-row-reverse';
             
             const avatar = document.createElement('div');
-            avatar.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm';
-            avatar.style.background = sender === 'user' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : '#10b981';
-            avatar.textContent = sender === 'user' ? 'C' : 'AI';
+            if (sender === 'user') {
+                avatar.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm';
+                avatar.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                avatar.textContent = 'C';
+            } else {
+                avatar.className = 'ai-avatar';
+                avatar.textContent = 'AI';
+            }
             
             const messageContent = document.createElement('div');
             messageContent.className = 'p-4 rounded-2xl max-w-3/4';
