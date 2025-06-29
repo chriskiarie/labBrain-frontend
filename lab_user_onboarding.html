@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LabBrain Onboarding</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        .onboarding-header { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 2rem; height: 80px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
+        .onboarding-logo { height: 64px; width: 64px; border-radius: 50%; background: #f1f5f9; object-fit: cover; }
+        .onboarding-title { font-size: 2rem; font-weight: 800; color: #1d4ed8; letter-spacing: 1px; }
+        .onboarding-logout { background: #ef4444; color: #fff; border: none; padding: 0.5rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .onboarding-logout:hover { background: #dc2626; }
+        .main-container { display: flex; flex-direction: row; height: calc(100vh - 80px); }
+        .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; padding: 2rem 1rem 1rem 1rem; display: flex; flex-direction: column; gap: 1rem; }
+        .modules-list { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+        .module-item { padding: 0.75rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 500; color: #374151; display: flex; align-items: center; justify-content: space-between; transition: background 0.2s, color 0.2s; }
+        .module-item.active { background: #e0e7ff; color: #1d4ed8; }
+        .module-check { display: none; color: #22c55e; font-size: 1.1rem; margin-left: 8px; }
+        .module-item.active .module-check { display: inline; }
+        .sidebar-btn { margin-top: 1.5rem; background: #3b82f6; color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+        .sidebar-btn:hover { background: #2563eb; }
+        .content-area { flex: 1; display: flex; flex-direction: column; padding: 2rem; overflow-y: auto; }
+        .learning-content { flex: 1; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); padding: 2rem; margin-bottom: 1.5rem; overflow-y: auto; }
+        .onboarding-chat { background: #f1f5f9; border-radius: 14px; padding: 1.2rem; box-shadow: 0 2px 8px rgba(59,130,246,0.07); display: flex; flex-direction: column; gap: 1rem; }
+        .chat-history { max-height: 180px; overflow-y: auto; margin-bottom: 0.5rem; }
+        .chat-msg { display: flex; align-items: flex-start; gap: 0.7rem; margin-bottom: 0.7rem; }
+        .chat-msg.user .chat-bubble { background: #3b82f6; color: #fff; align-self: flex-end; }
+        .chat-msg.bot .chat-bubble { background: #e0e7ff; color: #1e293b; }
+        .chat-bubble { padding: 0.7rem 1.1rem; border-radius: 16px; font-size: 1rem; max-width: 70%; word-break: break-word; }
+        .chat-avatar { width: 36px; height: 36px; border-radius: 50%; background: #3b82f6; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.1rem; }
+        .chat-msg.bot .chat-avatar { background: #a5b4fc; color: #1e293b; }
+        .chat-input-row { display: flex; align-items: flex-end; gap: 0.7rem; }
+        .chat-input { flex: 1; min-height: 38px; max-height: 90px; resize: none; border: 1.5px solid #e5e7eb; border-radius: 10px; padding: 0.7rem 1rem; font-size: 1rem; transition: border 0.2s; }
+        .chat-input:focus { border-color: #3b82f6; outline: none; }
+        .chat-send-btn { background: #3b82f6; color: #fff; border: none; border-radius: 10px; padding: 0.7rem 1.3rem; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: background 0.2s; }
+        .chat-send-btn:disabled { background: #a5b4fc; cursor: not-allowed; }
+        .typing-indicator { display: none; color: #64748b; font-size: 1rem; margin-left: 2.5rem; }
+        .typing-dots { display: inline-block; }
+        .typing-dots::after { content: ''; animation: typing 1.5s infinite; }
+        @keyframes typing { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
+        /* Toasts */
+        .toast-container { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 0.7rem; align-items: center; }
+        .toast { padding: 14px 28px; border-radius: 12px; font-weight: 600; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.13); opacity: 0.97; font-size: 1.05rem; }
+        .toast-success { background: linear-gradient(135deg, #10b981, #059669); }
+        .toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        @media (max-width: 900px) { .main-container { flex-direction: column; } .sidebar { flex-direction: row; width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; padding: 1rem 0.5rem; overflow-x: auto; } .modules-list { flex-direction: row; gap: 0.5rem; } .content-area { padding: 1rem; } .learning-content { padding: 1rem; } }
+        .ai-assistant-card-effect:hover {
+            box-shadow: 0 0 0 4px #dbeafe, 0 4px 32px 0 #2563eb33;
+            border-color: #2563eb;
+        }
+    </style>
+</head>
+<body>
+    <div class="onboarding-header">
+        <div class="flex items-center gap-4">
+            <img src="assets/KEBS_LOGO.jpg" alt="KEBS Logo" class="onboarding-logo">
+            <span class="onboarding-title">LabBrain Onboarding</span>
+        </div>
+        <button class="onboarding-logout" onclick="logout()">Logout</button>
+    </div>
+    <div class="main-container">
+        <div class="sidebar">
+            <div class="modules-list" id="modulesList">
+                <!-- Modules will be injected here -->
+            </div>
+            <button class="sidebar-btn" onclick="goToDashboard()">Back to Dashboard</button>
+        </div>
+        <div class="content-area">
+            <div class="flex justify-center my-4 w-full">
+                <a href="lab_user_dashboard.html" class="bg-white px-6 py-3 rounded-xl shadow-md border border-gray-200 transition-all cursor-pointer w-full max-w-sm flex items-center justify-center ai-assistant-card-effect">
+                    <span class="text-lg font-semibold text-gray-800">AI Assistant</span>
+                </a>
+            </div>
+            <div class="learning-content" id="learningContent">
+                <!-- Module content will be injected here -->
+            </div>
+            <div class="onboarding-chat">
+                <div class="chat-history" id="chatHistory"></div>
+                <div class="typing-indicator" id="typingIndicator"><span class="typing-dots"></span> AI is typing</div>
+                <div class="chat-input-row">
+                    <textarea class="chat-input" id="chatInput" rows="1" placeholder="Ask about this module..." oninput="autoGrow(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendOnboardingMessage();}"></textarea>
+                    <button class="chat-send-btn" id="chatSendBtn" onclick="sendOnboardingMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="toast-container" id="toastContainer"></div>
+    <script>
+        // --- Module Data ---
+        const modules = [
+            { id: 'welcome', title: 'Welcome to the Lab' },
+            { id: 'safety', title: 'Lab Safety & PPE' },
+            { id: 'equipment', title: 'Equipment Overview' },
+            { id: 'sops', title: 'Standard Operating Procedures' },
+            { id: 'iso', title: 'About ISO 17025' },
+            { id: 'quiz', title: 'Quiz: Knowledge Check' }
+        ];
+        const moduleContents = {
+            welcome: `<h3>Welcome to the LabBrain Onboarding!</h3><p>This onboarding will guide you through the essentials of working in our calibration lab. Use the modules on the left to navigate. If you have questions, use the chat below!</p>`,
+            safety: `<h3>Lab Safety & PPE</h3><ul><li>Always wear appropriate PPE (lab coat, gloves, safety glasses).</li><li>Know the location of emergency exits and equipment.</li><li>Report any unsafe conditions immediately.</li></ul>`,
+            equipment: `<h3>Equipment Overview</h3><p>Our lab uses a variety of precision instruments. Always check calibration status before use. If unsure, ask a supervisor.</p>`,
+            sops: `<h3>Standard Operating Procedures (SOPs)</h3><ul><li>Follow written SOPs for all procedures.</li><li>Document all work in the lab notebook.</li><li>Never deviate from SOPs without supervisor approval.</li></ul>`,
+            iso: `<h3>About ISO 17025</h3><p>ISO 17025 is the international standard for testing and calibration labs. It ensures quality, competence, and traceability in all lab work.</p>`,
+            quiz: `<h3>Quiz: Knowledge Check</h3><form id='quizForm'><p>1. What should you do if you notice a safety hazard?</p><label><input type='radio' name='q1'> Ignore it</label><br><label><input type='radio' name='q1'> Report it immediately</label><br><label><input type='radio' name='q1'> Wait for someone else</label><br><br><button type='submit' class='chat-send-btn'>Submit Quiz</button></form>`
+        };
+        // --- Sidebar Module Logic ---
+        function renderModules() {
+            const list = document.getElementById('modulesList');
+            list.innerHTML = '';
+            modules.forEach((mod, idx) => {
+                const div = document.createElement('div');
+                div.className = 'module-item' + (idx === 0 ? ' active' : '');
+                div.id = 'module-' + mod.id;
+                div.innerHTML = `<span>${mod.title}</span> <span class='module-check'>✔</span>`;
+                div.onclick = () => loadModule(mod.id);
+                list.appendChild(div);
+            });
+        }
+        function loadModule(id) {
+            // Remove active from all
+            document.querySelectorAll('.module-item').forEach(el => el.classList.remove('active'));
+            // Add active to selected
+            const activeDiv = document.getElementById('module-' + id);
+            activeDiv.classList.add('active');
+            // Show checkmark
+            document.querySelectorAll('.module-check').forEach(el => el.style.visibility = 'hidden');
+            activeDiv.querySelector('.module-check').style.visibility = 'visible';
+            // Load content
+            document.getElementById('learningContent').innerHTML = moduleContents[id] || '<p>Module coming soon.</p>';
+            // Quiz logic
+            if (id === 'quiz') {
+                setTimeout(() => {
+                    const quizForm = document.getElementById('quizForm');
+                    if (quizForm) {
+                        quizForm.onsubmit = function(e) {
+                            e.preventDefault();
+                            showToast('Quiz submitted! (Simulated grading)', 'info');
+                        };
+                    }
+                }, 100);
+            }
+        }
+        // --- Onboarding Chat Logic ---
+        const chatHistory = document.getElementById('chatHistory');
+        const chatInput = document.getElementById('chatInput');
+        const chatSendBtn = document.getElementById('chatSendBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+        function sendOnboardingMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            addChatMessage('user', msg);
+            chatInput.value = '';
+            chatSendBtn.disabled = true;
+            typingIndicator.style.display = 'block';
+            setTimeout(() => {
+                // Simulated AI response
+                const response = getSimulatedAIResponse(msg);
+                addChatMessage('bot', response);
+                typingIndicator.style.display = 'none';
+                chatSendBtn.disabled = false;
+            }, 1200);
+        }
+        function addChatMessage(sender, text) {
+            const div = document.createElement('div');
+            div.className = 'chat-msg ' + sender;
+            div.innerHTML = `<div class='chat-avatar'>${sender === 'user' ? 'U' : 'AI'}</div><div class='chat-bubble'>${text}</div>`;
+            chatHistory.appendChild(div);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
+        function getSimulatedAIResponse(msg) {
+            msg = msg.toLowerCase();
+            if (msg.includes('safety')) return 'Always wear PPE and report hazards immediately.';
+            if (msg.includes('iso')) return 'ISO 17025 ensures quality and competence in labs.';
+            if (msg.includes('equipment')) return 'Check calibration status before using any equipment.';
+            if (msg.includes('sop')) return 'Follow written SOPs and document your work.';
+            if (msg.includes('hello') || msg.includes('hi')) return 'Hello! How can I help you with onboarding?';
+            return 'That is a great question! Please refer to the module content or ask your supervisor for more details.';
+        }
+        function autoGrow(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+        // --- Toasts ---
+        function showToast(msg, type = 'success') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast toast-' + type;
+            toast.textContent = msg;
+            toastContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = 0;
+                setTimeout(() => toast.remove(), 400);
+            }, 2600);
+        }
+        // --- Navigation ---
+        function logout() { window.location.href = 'index.html'; }
+        function goToDashboard() { window.location.href = 'lab_user_dashboard.html'; }
+        // --- Init ---
+        renderModules();
+        loadModule('welcome');
+        // Show checkmark for first module
+        setTimeout(() => {
+            document.querySelector('.module-item.active .module-check').style.visibility = 'visible';
+        }, 100);
+    </script>
+</body>
+</html> 
