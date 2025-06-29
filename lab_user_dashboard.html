@@ -283,80 +283,6 @@
             outline: none;
         }
 
-        .onboarding-row {
-            width: 100%;
-            display: flex;
-            justify-content: flex-start;
-            align-items: center;
-            margin-bottom: 0.2rem;
-            position: relative;
-            min-height: 90px;
-        }
-        .onboarding-card {
-            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
-            border: 1px solid #86efac;
-            border-radius: 50px;
-            margin: 0;
-            cursor: pointer;
-            transition: width 0.32s linear, border-radius 0.32s linear, box-shadow 0.32s linear, background 0.32s linear;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-            width: 78px;
-            height: 78px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: visible;
-            position: relative;
-            z-index: 2;
-        }
-        .onboarding-icon {
-            font-size: 2.3rem;
-            color: #059669;
-            width: 78px;
-            height: 78px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            flex-grow: 0;
-            margin: 0;
-        }
-        .onboarding-card:not(:hover) .onboarding-label,
-        .onboarding-card:not(:hover) .onboarding-arrow,
-        .onboarding-card:not(:hover) .onboarding-getstarted {
-            opacity: 0;
-            max-width: 0;
-            pointer-events: none;
-        }
-        .onboarding-label, .onboarding-arrow, .onboarding-getstarted {
-            opacity: 1;
-            max-width: 300px;
-            transition: opacity 0.18s linear, max-width 0.32s linear;
-        }
-        .onboarding-label {
-            font-weight: bold;
-            color: #065f46;
-            font-size: 1.08rem;
-            margin-left: 0.7rem;
-            margin-right: 0.7rem;
-            white-space: nowrap;
-        }
-        .onboarding-getstarted {
-            color: #047857;
-            font-size: 0.97rem;
-            font-weight: 600;
-            margin-right: 0.7rem;
-            margin-left: 0.2rem;
-            white-space: nowrap;
-        }
-        .onboarding-arrow {
-            font-size: 1.3rem;
-            color: #059669;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-
         .blue-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
         .ai-avatar-blue {
             width: 48px;
@@ -444,15 +370,12 @@
         <!-- Topic Filters -->
         <!-- Removed topic cards for cleaner UI -->
 
-        <!-- Onboarding Button Row (restored) -->
-        <div class="onboarding-row">
-            <div class="onboarding-card" onclick="goToOnboarding()">
-                <div class="onboarding-card-content">
-                    <div class="onboarding-icon">🎓</div>
-                    <div class="onboarding-label">LabBrain Onboarding</div>
-                    <div class="onboarding-getstarted">Get Started</div>
-                    <div class="onboarding-arrow">→</div>
-                </div>
+        <!-- Blank Card in Middle -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer">
+                <div class="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-2xl mb-4">📋</div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Document Analysis</h3>
+                <p class="text-gray-600">Upload and analyze lab documents for AI assistance</p>
             </div>
         </div>
 
@@ -476,6 +399,18 @@
             <div id="typingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
                 <span class="typing-dots-blue"><span></span><span></span><span></span></span> <span class="text-gray-600">AI is typing</span>
             </div>
+            
+            <!-- Chat Mode Toggle -->
+            <div class="px-6 py-3 bg-gray-50 border-t border-gray-200">
+                <div class="flex gap-2 flex-wrap">
+                    <button class="ai-mode-toggle active" data-mode="general" onclick="switchAIMode('general')">General</button>
+                    <button class="ai-mode-toggle" data-mode="procedures" onclick="switchAIMode('procedures')">Lab Procedures</button>
+                    <button class="ai-mode-toggle" data-mode="standards" onclick="switchAIMode('standards')">Standards</button>
+                    <button class="ai-mode-toggle" data-mode="troubleshooting" onclick="switchAIMode('troubleshooting')">Troubleshooting</button>
+                    <button class="ai-mode-toggle" data-mode="reports" onclick="switchAIMode('reports')">Reports</button>
+                </div>
+            </div>
+            
             <div class="p-6 border-t border-gray-200 bg-white rounded-b-2xl">
                 <div class="flex gap-3 items-center">
                     <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-blue-500 outline-none" placeholder="Ask the AI about your lab documents..." onkeypress="handleChatKeyPress(event)">
@@ -553,13 +488,8 @@
             document.querySelectorAll('.ai-mode-toggle').forEach(btn => {
                 btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
             });
-            // Update chat header and topic label
-            document.getElementById('currentTopic').textContent = aiModeLabels[mode];
             // Update input placeholder
             document.getElementById('chatInput').placeholder = aiModePlaceholders[mode];
-            // Optionally update welcome message
-            document.getElementById('chatWelcomeContent').innerHTML =
-                `Hello! I'm your LabBrain AI assistant. I can help you with ${aiModeLabels[mode].toLowerCase()}. <br><br><strong>You're now in <span style='color:#2563eb;'>${aiModeLabels[mode]}</span> mode.</strong>`;
         }
 
         function handleChatKeyPress(event) {
@@ -738,10 +668,6 @@
                 window.location.href = 'Main.html';
             }
             */
-        }
-
-        function goToOnboarding() {
-            window.location.href = 'lab_user_onboarding.html';
         }
     </script>
 </body>
