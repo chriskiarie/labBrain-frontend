@@ -330,59 +330,42 @@
         </div>
 
         <!-- Topic Filters -->
-        <div class="topic-filters">
-            <div class="topic-card active" onclick="setTopic('general')">
-                <div class="topic-icon">🤖</div>
-                <h3 class="topic-title">General Assistant</h3>
-            </div>
-            
-            <div class="topic-card" onclick="setTopic('procedures')">
-                <div class="topic-icon">📋</div>
-                <h3 class="topic-title">Lab Procedures</h3>
-            </div>
-            
-            <div class="topic-card" onclick="setTopic('standards')">
-                <div class="topic-icon">📏</div>
-                <h3 class="topic-title">Standards & Guidelines</h3>
-            </div>
-            
-            <div class="topic-card" onclick="setTopic('troubleshooting')">
-                <div class="topic-icon">🔧</div>
-                <h3 class="topic-title">Troubleshooting</h3>
-            </div>
-            
-            <div class="topic-card" onclick="setTopic('reports')">
-                <div class="topic-icon">📊</div>
-                <h3 class="topic-title">Reports & Data</h3>
-            </div>
-        </div>
+        <!-- Removed topic cards for cleaner UI -->
 
         <!-- Main Chat Area -->
         <div class="chat-container">
             <div class="chat-header">
                 <div>
-                    <h3>LabBrain AI Assistant</h3>
-                    <div class="current-topic">Current Mode: <span id="currentTopic">General Assistant</span></div>
+                    <h3 id="chatHeaderTitle">LabBrain AI Assistant</h3>
+                    <div class="current-topic" id="currentTopicLabel">Current Mode: <span id="currentTopic">AI Assistant</span></div>
                 </div>
             </div>
-            
+
+            <!-- Toggle Switch for Chat Modes -->
+            <div class="flex items-center justify-center gap-6 py-3 border-b border-gray-100 bg-gray-50">
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="chatMode" value="assistant" checked onchange="switchChatMode('assistant')">
+                    <span class="font-semibold text-blue-700">AI Assistant</span>
+                </label>
+                <label class="flex items-center gap-2 cursor-pointer">
+                    <input type="radio" name="chatMode" value="onboarding" onchange="switchChatMode('onboarding')">
+                    <span class="font-semibold text-blue-700">Onboarding</span>
+                </label>
+            </div>
+
             <div id="chatMessages" class="chat-messages">
-                <div class="message bot">
+                <div class="message bot" id="chatWelcomeMsg">
                     <div class="message-avatar">AI</div>
-                    <div class="message-content">
-                        Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. 
-                        <br><br>
-                        <strong>Select a topic above to focus my responses, or ask me anything in general mode!</strong>
-                        <br><br>
-                        What can I help you with today?
+                    <div class="message-content" id="chatWelcomeContent">
+                        Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. <br><br><strong>Ask me anything, or switch to Onboarding for a guided introduction!</strong>
                     </div>
                 </div>
             </div>
-            
+
             <div id="typingIndicator" class="typing-indicator">
                 <span class="typing-dots">AI is typing</span>
             </div>
-            
+
             <div class="chat-input">
                 <div class="chat-input-container">
                     <input type="text" id="chatInput" class="chat-input-field" placeholder="Ask me anything about lab procedures, equipment, standards..." onkeypress="handleChatKeyPress(event)">
@@ -650,6 +633,23 @@
                 window.location.href = 'Main.html';
             }
             */
+        }
+
+        function switchChatMode(mode) {
+            const chatHeaderTitle = document.getElementById('chatHeaderTitle');
+            const currentTopic = document.getElementById('currentTopic');
+            const chatWelcomeMsg = document.getElementById('chatWelcomeMsg');
+            const chatWelcomeContent = document.getElementById('chatWelcomeContent');
+            if (mode === 'assistant') {
+                chatHeaderTitle.textContent = 'LabBrain AI Assistant';
+                currentTopic.textContent = 'AI Assistant';
+                chatWelcomeContent.innerHTML = "Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. <br><br><strong>Ask me anything, or switch to Onboarding for a guided introduction!</strong>";
+            } else {
+                chatHeaderTitle.textContent = 'LabBrain Onboarding';
+                currentTopic.textContent = 'Onboarding';
+                chatWelcomeContent.innerHTML = "Welcome to LabBrain Onboarding! Here you'll get a simple, step-by-step introduction to the lab, safety, equipment, and more. <br><br><strong>Ask onboarding questions or switch back to AI Assistant for general help.</strong>";
+            }
+            // Optionally clear chat messages or update content area here
         }
     </script>
 </body>
