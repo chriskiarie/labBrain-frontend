@@ -341,6 +341,10 @@
             box-shadow: 0 0 0 4px #bbf7d0, 0 4px 32px 0 #22c55e33;
             border-color: #22c55e;
         }
+        .ai-assistant-card-effect:hover {
+            box-shadow: 0 0 0 4px #dbeafe, 0 4px 32px 0 #2563eb33;
+            border-color: #2563eb;
+        }
     </style>
 </head>
 <body>
@@ -372,11 +376,14 @@
             <p class="text-blue-100">Select a topic below or ask me anything about lab procedures, equipment, standards, and more!</p>
         </div>
 
-        <!-- Centered Blank Card -->
-        <div class="flex justify-center my-4 w-full">
-            <div class="bg-white px-6 py-3 rounded-xl shadow-md border border-gray-200 transition-all cursor-pointer w-full max-w-sm flex items-center justify-center onboarding-card-effect">
+        <!-- Centered Action Cards -->
+        <div class="flex flex-col md:flex-row justify-center gap-6 my-4 w-full">
+            <a href="lab_user_onboarding.html" class="bg-white px-6 py-3 rounded-xl shadow-md border border-gray-200 transition-all cursor-pointer w-full max-w-sm flex items-center justify-center onboarding-card-effect">
                 <span class="text-lg font-semibold text-gray-800">Onboarding</span>
-            </div>
+            </a>
+            <a href="lab_user_dashboard.html" class="bg-white px-6 py-3 rounded-xl shadow-md border border-gray-200 transition-all cursor-pointer w-full max-w-sm flex items-center justify-center ai-assistant-card-effect">
+                <span class="text-lg font-semibold text-gray-800">AI Assistant</span>
+            </a>
         </div>
 
         <!-- Main Chat Area (Lab User Chat, Supervisor Logic, Blue Theme) -->
