@@ -48,6 +48,9 @@
             padding: 2rem;
             background: #f8fafc;
             min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
         }
         
         .welcome-section {
@@ -316,11 +319,20 @@
             outline: none;
         }
 
+        .onboarding-row {
+            width: 100%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            margin-bottom: 0.2rem;
+            position: relative;
+            min-height: 80px;
+        }
         .onboarding-card {
             background: linear-gradient(135deg, #dcfce7, #bbf7d0);
             border: 1px solid #86efac;
             border-radius: 50px;
-            margin: 0.1rem 0 0.7rem 2.5rem;
+            margin: 0;
             cursor: pointer;
             transition: width 0.28s cubic-bezier(.4,2,.6,1), border-radius 0.28s, box-shadow 0.28s, background 0.28s;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
@@ -357,38 +369,38 @@
             flex: 1 1 0%;
             height: 100%;
         }
-        .onboarding-card:not(:hover) .onboarding-text,
-        .onboarding-card:not(:hover) .onboarding-arrow {
+        .onboarding-card:not(:hover) .onboarding-label,
+        .onboarding-card:not(:hover) .onboarding-arrow,
+        .onboarding-card:not(:hover) .onboarding-getstarted {
             opacity: 0;
             max-width: 0;
             pointer-events: none;
         }
-        .onboarding-text, .onboarding-arrow {
+        .onboarding-label, .onboarding-arrow, .onboarding-getstarted {
             opacity: 1;
             max-width: 300px;
             transition: opacity 0.18s, max-width 0.28s;
         }
-        .onboarding-text {
-            flex: 1;
-            margin-left: 0.5rem;
-            overflow: hidden;
-        }
-        .onboarding-text h4 {
-            margin: 0 0 0.15rem 0;
+        .onboarding-label {
+            font-weight: bold;
             color: #065f46;
             font-size: 1.08rem;
-            font-weight: 600;
+            margin-left: 0.7rem;
+            margin-right: 0.7rem;
+            white-space: nowrap;
         }
-        .onboarding-text p {
-            margin: 0;
+        .onboarding-getstarted {
             color: #047857;
-            font-size: 0.87rem;
+            font-size: 0.97rem;
+            font-weight: 600;
+            margin-right: 0.7rem;
+            margin-left: 0.2rem;
+            white-space: nowrap;
         }
         .onboarding-arrow {
             font-size: 1.3rem;
             color: #059669;
             font-weight: bold;
-            margin-left: 0.5rem;
             display: flex;
             align-items: center;
         }
@@ -427,15 +439,14 @@
         <!-- Removed topic cards for cleaner UI -->
 
         <!-- Main Chat Area -->
-        <!-- Onboarding Card -->
-        <div class="onboarding-card" onclick="goToOnboarding()">
-            <div class="onboarding-card-content">
-                <div class="onboarding-icon">🎓</div>
-                <div class="onboarding-text">
-                    <h4>LabBrain Onboarding</h4>
-                    <p>Get started with guided training and safety procedures</p>
+        <div class="onboarding-row">
+            <div class="onboarding-card" onclick="goToOnboarding()">
+                <div class="onboarding-card-content">
+                    <div class="onboarding-icon">🎓</div>
+                    <div class="onboarding-label">LabBrain Onboarding</div>
+                    <div class="onboarding-getstarted">Get Started</div>
+                    <div class="onboarding-arrow">→</div>
                 </div>
-                <div class="onboarding-arrow">→</div>
             </div>
         </div>
 
