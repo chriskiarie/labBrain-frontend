@@ -319,13 +319,21 @@
         .onboarding-card {
             background: linear-gradient(135deg, #dcfce7, #bbf7d0);
             border: 1px solid #86efac;
-            border-radius: 12px;
+            border-radius: 50px;
             margin: 1rem;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
         .onboarding-card:hover {
+            width: 300px;
+            border-radius: 25px;
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
             background: linear-gradient(135deg, #bbf7d0, #a7f3d0);
@@ -333,12 +341,19 @@
         .onboarding-card-content {
             display: flex;
             align-items: center;
-            padding: 1rem 1.5rem;
+            padding: 0 1rem;
             gap: 1rem;
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        .onboarding-card:hover .onboarding-card-content {
+            opacity: 1;
         }
         .onboarding-icon {
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: #059669;
+            min-width: 1.8rem;
         }
         .onboarding-text {
             flex: 1;
@@ -346,16 +361,16 @@
         .onboarding-text h4 {
             margin: 0 0 0.25rem 0;
             color: #065f46;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
         }
         .onboarding-text p {
             margin: 0;
             color: #047857;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         .onboarding-arrow {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             color: #059669;
             font-weight: bold;
         }
@@ -394,19 +409,19 @@
         <!-- Removed topic cards for cleaner UI -->
 
         <!-- Main Chat Area -->
-        <div class="chat-container">
-            <!-- Onboarding Card -->
-            <div class="onboarding-card" onclick="goToOnboarding()">
-                <div class="onboarding-card-content">
-                    <div class="onboarding-icon">🎓</div>
-                    <div class="onboarding-text">
-                        <h4>LabBrain Onboarding</h4>
-                        <p>Get started with guided training and safety procedures</p>
-                    </div>
-                    <div class="onboarding-arrow">→</div>
+        <!-- Onboarding Card -->
+        <div class="onboarding-card" onclick="goToOnboarding()">
+            <div class="onboarding-card-content">
+                <div class="onboarding-icon">🎓</div>
+                <div class="onboarding-text">
+                    <h4>LabBrain Onboarding</h4>
+                    <p>Get started with guided training and safety procedures</p>
                 </div>
+                <div class="onboarding-arrow">→</div>
             </div>
+        </div>
 
+        <div class="chat-container">
             <div class="chat-header">
                 <div>
                     <h3 id="chatHeaderTitle">LabBrain AI Assistant</h3>
