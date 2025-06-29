@@ -298,6 +298,23 @@
             60% { content: '..'; }
             80%, 100% { content: '...'; }
         }
+
+        .ai-mode-toggle {
+            background: #f1f5f9;
+            color: #2563eb;
+            border: none;
+            border-radius: 999px;
+            padding: 0.5rem 1.2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s;
+        }
+        .ai-mode-toggle.active, .ai-mode-toggle:focus {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: #fff;
+            outline: none;
+        }
     </style>
 </head>
 <body>
@@ -337,27 +354,24 @@
             <div class="chat-header">
                 <div>
                     <h3 id="chatHeaderTitle">LabBrain AI Assistant</h3>
-                    <div class="current-topic" id="currentTopicLabel">Current Mode: <span id="currentTopic">AI Assistant</span></div>
+                    <div class="current-topic" id="currentTopicLabel">Current Mode: <span id="currentTopic">General</span></div>
                 </div>
             </div>
 
-            <!-- Toggle Switch for Chat Modes -->
-            <div class="flex items-center justify-center gap-6 py-3 border-b border-gray-100 bg-gray-50">
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="chatMode" value="assistant" checked onchange="switchChatMode('assistant')">
-                    <span class="font-semibold text-blue-700">AI Assistant</span>
-                </label>
-                <label class="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="chatMode" value="onboarding" onchange="switchChatMode('onboarding')">
-                    <span class="font-semibold text-blue-700">Onboarding</span>
-                </label>
+            <!-- AI Mode Toggle Switches -->
+            <div class="flex items-center justify-center gap-3 py-2 border-b border-gray-100 bg-gray-50" id="aiModeToggles">
+                <button class="ai-mode-toggle active" data-mode="general" onclick="switchAIMode('general')">General</button>
+                <button class="ai-mode-toggle" data-mode="procedures" onclick="switchAIMode('procedures')">Lab Procedures</button>
+                <button class="ai-mode-toggle" data-mode="standards" onclick="switchAIMode('standards')">Standards</button>
+                <button class="ai-mode-toggle" data-mode="troubleshooting" onclick="switchAIMode('troubleshooting')">Troubleshooting</button>
+                <button class="ai-mode-toggle" data-mode="reports" onclick="switchAIMode('reports')">Reports</button>
             </div>
 
             <div id="chatMessages" class="chat-messages">
                 <div class="message bot" id="chatWelcomeMsg">
                     <div class="message-avatar">AI</div>
                     <div class="message-content" id="chatWelcomeContent">
-                        Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. <br><br><strong>Ask me anything, or switch to Onboarding for a guided introduction!</strong>
+                        Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. <br><br><strong>Choose a mode below to focus my responses, or ask me anything in General mode!</strong>
                     </div>
                 </div>
             </div>
@@ -423,30 +437,35 @@
         // Load user data when page loads
         document.addEventListener('DOMContentLoaded', loadUserData);
         
-        let currentTopic = 'general';
-        let messageHistory = [];
+        let currentAIMode = 'general';
+        const aiModeLabels = {
+            general: 'General',
+            procedures: 'Lab Procedures',
+            standards: 'Standards',
+            troubleshooting: 'Troubleshooting',
+            reports: 'Reports'
+        };
+        const aiModePlaceholders = {
+            general: 'Ask me anything about lab procedures, equipment, standards...',
+            procedures: 'Ask about lab procedures...',
+            standards: 'Ask about standards and guidelines...',
+            troubleshooting: 'Describe your troubleshooting issue...',
+            reports: 'Ask about reports or data...'
+        };
 
-        function setTopic(topic) {
-            currentTopic = topic;
-            
-            // Update active card
-            document.querySelectorAll('.topic-card').forEach(card => {
-                card.classList.remove('active');
+        function switchAIMode(mode) {
+            currentAIMode = mode;
+            // Update toggle button styles
+            document.querySelectorAll('.ai-mode-toggle').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-mode') === mode);
             });
-            event.currentTarget.classList.add('active');
-            
-            // Update topic display
-            const topicNames = {
-                'general': 'General Assistant',
-                'procedures': 'Lab Procedures',
-                'standards': 'Standards & Guidelines',
-                'troubleshooting': 'Equipment Troubleshooting',
-                'reports': 'Reports & Data'
-            };
-            document.getElementById('currentTopic').textContent = topicNames[topic];
-            
-            // Add topic change message
-            addMessage(`Switched to ${topicNames[topic]} mode. Ask me anything about ${topicNames[topic].toLowerCase()}!`, 'bot');
+            // Update chat header and topic label
+            document.getElementById('currentTopic').textContent = aiModeLabels[mode];
+            // Update input placeholder
+            document.getElementById('chatInput').placeholder = aiModePlaceholders[mode];
+            // Optionally update welcome message
+            document.getElementById('chatWelcomeContent').innerHTML =
+                `Hello! I'm your LabBrain AI assistant. I can help you with ${aiModeLabels[mode].toLowerCase()}. <br><br><strong>You're now in <span style='color:#2563eb;'>${aiModeLabels[mode]}</span> mode.</strong>`;
         }
 
         function handleChatKeyPress(event) {
@@ -530,7 +549,7 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
             
             // Store in history
-            messageHistory.push({ content, sender, timestamp: new Date(), topic: currentTopic });
+            messageHistory.push({ content, sender, timestamp: new Date(), topic: currentAIMode });
         }
 
         function showTypingIndicator() {
@@ -633,23 +652,6 @@
                 window.location.href = 'Main.html';
             }
             */
-        }
-
-        function switchChatMode(mode) {
-            const chatHeaderTitle = document.getElementById('chatHeaderTitle');
-            const currentTopic = document.getElementById('currentTopic');
-            const chatWelcomeMsg = document.getElementById('chatWelcomeMsg');
-            const chatWelcomeContent = document.getElementById('chatWelcomeContent');
-            if (mode === 'assistant') {
-                chatHeaderTitle.textContent = 'LabBrain AI Assistant';
-                currentTopic.textContent = 'AI Assistant';
-                chatWelcomeContent.innerHTML = "Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. <br><br><strong>Ask me anything, or switch to Onboarding for a guided introduction!</strong>";
-            } else {
-                chatHeaderTitle.textContent = 'LabBrain Onboarding';
-                currentTopic.textContent = 'Onboarding';
-                chatWelcomeContent.innerHTML = "Welcome to LabBrain Onboarding! Here you'll get a simple, step-by-step introduction to the lab, safety, equipment, and more. <br><br><strong>Ask onboarding questions or switch back to AI Assistant for general help.</strong>";
-            }
-            // Optionally clear chat messages or update content area here
         }
     </script>
 </body>
