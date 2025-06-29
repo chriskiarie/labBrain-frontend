@@ -55,13 +55,31 @@
     </style>
 </head>
 <body>
-    <div class="onboarding-header">
+    <!-- Dashboard Header (copied from dashboard) -->
+    <header class="dashboard-header">
         <div class="flex items-center gap-4">
-            <img src="assets/KEBS_LOGO.jpg" alt="KEBS Logo" class="onboarding-logo">
-            <span class="onboarding-title">LabBrain Onboarding</span>
+            <img src="assets/KEBS_LOGO.jpg" alt="KEBS Logo" class="dashboard-logo">
+            <div>
+                <h1 class="text-xl font-bold text-gray-800">LabBrain</h1>
+                <p class="text-sm text-gray-600">AI-Powered Lab Assistant</p>
+            </div>
         </div>
-        <button class="onboarding-logout" onclick="logout()">Logout</button>
+        <div class="user-info">
+            <div class="text-right">
+                <p class="font-semibold text-gray-800" id="onboardingUserName">Welcome</p>
+                <p class="text-sm text-gray-600">Lab User</p>
+            </div>
+            <div class="user-avatar" id="onboardingUserAvatar">U</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </header>
+
+    <!-- Blue Welcome Tile -->
+    <div class="welcome-section w-full mt-4 mb-4">
+        <h2 class="text-2xl font-bold mb-2">Welcome to LabBrain Onboarding</h2>
+        <p class="text-blue-100">This section will guide you through the essentials of working in our calibration lab. Use the modules on the left to navigate. If you have questions, use the chat below!</p>
     </div>
+
     <div class="main-container">
         <div class="sidebar">
             <div class="modules-list" id="modulesList">
