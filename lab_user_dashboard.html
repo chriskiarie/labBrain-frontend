@@ -402,7 +402,6 @@
                     <button class="ai-mode-toggle" data-mode="procedures" onclick="switchAIMode('procedures')">Lab Procedures</button>
                     <button class="ai-mode-toggle" data-mode="standards" onclick="switchAIMode('standards')">Standards</button>
                     <button class="ai-mode-toggle" data-mode="troubleshooting" onclick="switchAIMode('troubleshooting')">Troubleshooting</button>
-                    <button class="ai-mode-toggle" data-mode="reports" onclick="switchAIMode('reports')">Reports</button>
                 </div>
             </div>
             
@@ -466,15 +465,13 @@
             general: 'General',
             procedures: 'Lab Procedures',
             standards: 'Standards',
-            troubleshooting: 'Troubleshooting',
-            reports: 'Reports'
+            troubleshooting: 'Troubleshooting'
         };
         const aiModePlaceholders = {
             general: 'Ask me anything about lab procedures, equipment, standards...',
             procedures: 'Ask about lab procedures...',
             standards: 'Ask about standards and guidelines...',
-            troubleshooting: 'Describe your troubleshooting issue...',
-            reports: 'Ask about reports or data...'
+            troubleshooting: 'Describe your troubleshooting issue...'
         };
 
         function switchAIMode(mode) {
@@ -485,6 +482,8 @@
             });
             // Update input placeholder
             document.getElementById('chatInput').placeholder = aiModePlaceholders[mode];
+            // Add a bot message indicating the new mode
+            addMessage(`You are now in <strong>${aiModeLabels[mode]}</strong> mode. Ask me about ${aiModeLabels[mode].toLowerCase()}!`, 'bot');
         }
 
         function handleChatKeyPress(event) {
@@ -610,17 +609,6 @@
                 }
                 else {
                     return "🔧 I'm in **Equipment Troubleshooting** mode. I can help you with:\n\n• Equipment error diagnosis\n• Performance issues\n• Calibration problems\n• Preventive maintenance\n• Repair procedures\n• Technical specifications\n• User manual guidance\n\nWhat equipment problem are you experiencing?";
-                }
-            }
-            else if (topic === 'reports') {
-                if (message.includes('generate') || message.includes('create') || message.includes('report')) {
-                    return "📊 **Report Generation Guide:**\n\n**Available Report Types:**\n\n1. **Calibration Reports:**\n   - Equipment identification\n   - Calibration results\n   - Measurement uncertainties\n   - Traceability information\n\n2. **Test Reports:**\n   - Sample information\n   - Test methods used\n   - Results with uncertainties\n   - Compliance statements\n\n3. **Quality Control Reports:**\n   - Control chart data\n   - Trend analysis\n   - Outlier identification\n   - Corrective actions\n\n4. **Trend Analysis Reports:**\n   - Historical data analysis\n   - Performance trends\n   - Statistical analysis\n   - Recommendations\n\nWhat type of report do you need to generate?";
-                }
-                else if (message.includes('data') || message.includes('analysis')) {
-                    return "📊 **Data Analysis Tools Available:**\n\n• **Statistical Analysis:**\n  - Mean, standard deviation\n  - Confidence intervals\n  - Trend analysis\n  - Outlier detection\n\n• **Graphical Representations:**\n  - Control charts\n  - Histograms\n  - Scatter plots\n  - Time series analysis\n\n• **Quality Metrics:**\n  - Process capability\n  - Measurement system analysis\n  - Uncertainty budgets\n  - Proficiency test results\n\nWhat type of data analysis do you need?";
-                }
-                else {
-                    return "📊 I'm in **Reports & Data** mode. I can help you with:\n\n• Report generation and templates\n• Data analysis and statistics\n• Quality control reporting\n• Trend analysis\n• Performance metrics\n• Compliance reporting\n• Data visualization\n\nWhat reporting or data analysis do you need help with?";
                 }
             }
             else {
