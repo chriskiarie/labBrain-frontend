@@ -336,6 +336,11 @@
         @media (max-width: 900px) {
             .user-full-width { max-width: 98vw; }
         }
+
+        .onboarding-card-effect:hover {
+            box-shadow: 0 0 0 4px #bbf7d0, 0 4px 32px 0 #22c55e33;
+            border-color: #22c55e;
+        }
     </style>
 </head>
 <body>
@@ -369,8 +374,8 @@
 
         <!-- Centered Blank Card -->
         <div class="flex justify-center my-4 w-full">
-            <div class="bg-white px-6 py-3 rounded-xl shadow-md border border-gray-200 hover:shadow-lg transition-all cursor-pointer w-full max-w-sm flex items-center justify-center">
-                <span class="text-lg font-semibold text-gray-800">Document Analysis</span>
+            <div class="bg-white px-6 py-3 rounded-xl shadow-md border border-gray-200 transition-all cursor-pointer w-full max-w-sm flex items-center justify-center onboarding-card-effect">
+                <span class="text-lg font-semibold text-gray-800">Onboarding</span>
             </div>
         </div>
 
