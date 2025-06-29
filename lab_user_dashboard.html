@@ -275,12 +275,19 @@
             font-weight: 600;
             font-size: 1rem;
             cursor: pointer;
-            transition: background 0.18s, color 0.18s;
+            transition: box-shadow 0.25s, background 0.25s, color 0.25s;
+            box-shadow: none;
         }
         .ai-mode-toggle.active, .ai-mode-toggle:focus {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            background: linear-gradient(90deg, #22d3ee 0%, #2563eb 100%);
             color: #fff;
             outline: none;
+            box-shadow: 0 0 12px 2px #38bdf833, 0 2px 8px #2563eb22;
+        }
+        .ai-mode-toggle:hover:not(.active) {
+            box-shadow: 0 0 8px 2px #2563eb33, 0 2px 8px #22d3ee22;
+            background: linear-gradient(90deg, #f0f9ff 0%, #dbeafe 100%);
+            color: #2563eb;
         }
 
         .blue-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
