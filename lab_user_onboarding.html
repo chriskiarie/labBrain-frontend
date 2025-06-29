@@ -7,7 +7,18 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        body {
+            min-height: 100vh;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
         .dashboard-header {
             background: #fff;
             border-bottom: 1px solid #e2e8f0;
@@ -51,8 +62,24 @@
         .logout-btn:hover {
             background: #dc2626;
         }
-        .main-container { display: flex; flex-direction: row; height: calc(100vh - 80px); }
-        .sidebar { width: 260px; background: #fff; border-right: 1px solid #e2e8f0; padding: 2rem 1rem 1rem 1rem; display: flex; flex-direction: column; gap: 1rem; }
+        .main-container {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: row;
+            height: calc(100vh - 80px);
+            min-height: 0;
+        }
+        .sidebar {
+            width: 260px;
+            background: #fff;
+            border-right: 1px solid #e2e8f0;
+            padding: 2rem 1rem 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            height: 100%;
+            min-height: 0;
+        }
         .modules-list { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
         .module-item { padding: 0.75rem 1rem; border-radius: 10px; cursor: pointer; font-weight: 500; color: #374151; display: flex; align-items: center; justify-content: space-between; transition: background 0.2s, color 0.2s; }
         .module-item.active { background: #e0e7ff; color: #1d4ed8; }
@@ -60,9 +87,33 @@
         .module-item.active .module-check { display: inline; }
         .sidebar-btn { margin-top: 1.5rem; background: #3b82f6; color: #fff; border: none; padding: 0.6rem 1.2rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
         .sidebar-btn:hover { background: #2563eb; }
-        .content-area { flex: 1; display: flex; flex-direction: column; padding: 2rem; overflow-y: auto; }
-        .learning-content { flex: 1; background: #fff; border-radius: 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.07); padding: 2rem; margin-bottom: 1.5rem; overflow-y: auto; }
-        .onboarding-chat { background: #f1f5f9; border-radius: 14px; padding: 1.2rem; box-shadow: 0 2px 8px rgba(59,130,246,0.07); display: flex; flex-direction: column; gap: 1rem; }
+        .content-area {
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: column;
+            padding: 0 2rem 2rem 2rem;
+            height: 100%;
+            min-height: 0;
+        }
+        .learning-content {
+            flex: 1 1 0;
+            min-height: 0;
+            max-height: none;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+        .onboarding-chat {
+            background: #f1f5f9;
+            border-radius: 14px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 8px rgba(59,130,246,0.07);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            max-height: 220px;
+            min-height: 120px;
+            overflow-y: auto;
+        }
         .chat-history { max-height: 180px; overflow-y: auto; margin-bottom: 0.5rem; }
         .chat-msg { display: flex; align-items: flex-start; gap: 0.7rem; margin-bottom: 0.7rem; }
         .chat-msg.user .chat-bubble { background: #3b82f6; color: #fff; align-self: flex-end; }
@@ -85,7 +136,13 @@
         .toast-success { background: linear-gradient(135deg, #10b981, #059669); }
         .toast-error { background: linear-gradient(135deg, #ef4444, #dc2626); }
         .toast-info { background: linear-gradient(135deg, #3b82f6, #2563eb); }
-        @media (max-width: 900px) { .main-container { flex-direction: column; } .sidebar { flex-direction: row; width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; padding: 1rem 0.5rem; overflow-x: auto; } .modules-list { flex-direction: row; gap: 0.5rem; } .content-area { padding: 1rem; } .learning-content { padding: 1rem; } }
+        @media (max-width: 900px) {
+            .main-container { flex-direction: column; height: auto; }
+            .sidebar { flex-direction: row; width: 100%; border-right: none; border-bottom: 1px solid #e2e8f0; padding: 1rem 0.5rem; overflow-x: auto; height: auto; }
+            .modules-list { flex-direction: row; gap: 0.5rem; }
+            .content-area { padding: 1rem; height: auto; }
+            .learning-content { padding: 1rem; }
+        }
         .ai-assistant-card-effect:hover {
             box-shadow: 0 0 0 4px #dbeafe, 0 4px 32px 0 #2563eb33;
             border-color: #2563eb;
