@@ -396,6 +396,18 @@
             0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
             40% { transform: scale(1.2); opacity: 1; }
         }
+
+        .user-full-width {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto 2.5rem auto;
+            border-radius: 2rem;
+            box-shadow: 0 4px 32px rgba(37,99,235,0.08);
+            background: white;
+            display: flex;
+            flex-direction: column;
+            min-height: 600px;
+        }
     </style>
 </head>
 <body>
@@ -430,9 +442,21 @@
         <!-- Topic Filters -->
         <!-- Removed topic cards for cleaner UI -->
 
+        <!-- Onboarding Button Row (restored) -->
+        <div class="onboarding-row">
+            <div class="onboarding-card" onclick="goToOnboarding()">
+                <div class="onboarding-card-content">
+                    <div class="onboarding-icon">🎓</div>
+                    <div class="onboarding-label">LabBrain Onboarding</div>
+                    <div class="onboarding-getstarted">Get Started</div>
+                    <div class="onboarding-arrow">→</div>
+                </div>
+            </div>
+        </div>
+
         <!-- Main Chat Area (Lab User Chat, Supervisor Logic, Blue Theme) -->
-        <div class="chat-container">
-            <div class="blue-gradient text-white p-6 flex items-center justify-between">
+        <div class="chat-container user-full-width">
+            <div class="blue-gradient text-white p-6 flex items-center justify-between rounded-t-2xl">
                 <h3 class="font-semibold text-lg">LabBrain AI Assistant</h3>
             </div>
             <div id="chatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
@@ -450,7 +474,7 @@
             <div id="typingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
                 <span class="typing-dots-blue"><span></span><span></span><span></span></span> <span class="text-gray-600">AI is typing</span>
             </div>
-            <div class="p-6 border-t border-gray-200 bg-white">
+            <div class="p-6 border-t border-gray-200 bg-white rounded-b-2xl">
                 <div class="flex gap-3 items-center">
                     <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-blue-500 outline-none" placeholder="Ask the AI about your lab documents..." onkeypress="handleChatKeyPress(event)">
                     <button class="w-12 h-12 blue-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
