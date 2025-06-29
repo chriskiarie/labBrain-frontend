@@ -315,6 +315,50 @@
             color: #fff;
             outline: none;
         }
+
+        .onboarding-card {
+            background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+            border: 1px solid #86efac;
+            border-radius: 12px;
+            margin: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .onboarding-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #bbf7d0, #a7f3d0);
+        }
+        .onboarding-card-content {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            gap: 1rem;
+        }
+        .onboarding-icon {
+            font-size: 2rem;
+            color: #059669;
+        }
+        .onboarding-text {
+            flex: 1;
+        }
+        .onboarding-text h4 {
+            margin: 0 0 0.25rem 0;
+            color: #065f46;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        .onboarding-text p {
+            margin: 0;
+            color: #047857;
+            font-size: 0.9rem;
+        }
+        .onboarding-arrow {
+            font-size: 1.5rem;
+            color: #059669;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -351,6 +395,18 @@
 
         <!-- Main Chat Area -->
         <div class="chat-container">
+            <!-- Onboarding Card -->
+            <div class="onboarding-card" onclick="goToOnboarding()">
+                <div class="onboarding-card-content">
+                    <div class="onboarding-icon">🎓</div>
+                    <div class="onboarding-text">
+                        <h4>LabBrain Onboarding</h4>
+                        <p>Get started with guided training and safety procedures</p>
+                    </div>
+                    <div class="onboarding-arrow">→</div>
+                </div>
+            </div>
+
             <div class="chat-header">
                 <div>
                     <h3 id="chatHeaderTitle">LabBrain AI Assistant</h3>
@@ -652,6 +708,10 @@
                 window.location.href = 'Main.html';
             }
             */
+        }
+
+        function goToOnboarding() {
+            window.location.href = 'lab_user_onboarding.html';
         }
     </script>
 </body>
