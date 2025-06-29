@@ -357,6 +357,45 @@
             display: flex;
             align-items: center;
         }
+
+        .blue-gradient { background: linear-gradient(135deg, #2563eb, #1d4ed8); }
+        .ai-avatar-blue {
+            width: 48px;
+            height: 48px;
+            min-width: 48px;
+            min-height: 48px;
+            background: #2563eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #fff;
+            margin-right: 16px;
+        }
+        .typing-indicator { display: none; }
+        .typing-dots-blue {
+            display: inline-block;
+            min-width: 2em;
+            letter-spacing: 2px;
+        }
+        .typing-dots-blue span {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            margin: 0 2px;
+            background: #2563eb;
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: typing-bounce 1.2s infinite both;
+        }
+        .typing-dots-blue span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots-blue span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing-bounce {
+            0%, 80%, 100% { transform: scale(0.7); opacity: 0.5; }
+            40% { transform: scale(1.2); opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -391,54 +430,30 @@
         <!-- Topic Filters -->
         <!-- Removed topic cards for cleaner UI -->
 
-        <!-- Main Chat Area -->
-        <div class="onboarding-row">
-            <div class="onboarding-card" onclick="goToOnboarding()">
-                <div class="onboarding-card-content">
-                    <div class="onboarding-icon">🎓</div>
-                    <div class="onboarding-label">LabBrain Onboarding</div>
-                    <div class="onboarding-getstarted">Get Started</div>
-                    <div class="onboarding-arrow">→</div>
-                </div>
-            </div>
-        </div>
-
+        <!-- Main Chat Area (Lab User Chat, Supervisor Logic, Blue Theme) -->
         <div class="chat-container">
-            <div class="chat-header">
-                <div>
-                    <h3 id="chatHeaderTitle">LabBrain AI Assistant</h3>
-                    <div class="current-topic" id="currentTopicLabel">Current Mode: <span id="currentTopic">General</span></div>
-                </div>
+            <div class="blue-gradient text-white p-6 flex items-center justify-between">
+                <h3 class="font-semibold text-lg">LabBrain AI Assistant</h3>
             </div>
-
-            <!-- AI Mode Toggle Switches -->
-            <div class="flex items-center justify-center gap-3 py-2 border-b border-gray-100 bg-gray-50" id="aiModeToggles">
-                <button class="ai-mode-toggle active" data-mode="general" onclick="switchAIMode('general')">General</button>
-                <button class="ai-mode-toggle" data-mode="procedures" onclick="switchAIMode('procedures')">Lab Procedures</button>
-                <button class="ai-mode-toggle" data-mode="standards" onclick="switchAIMode('standards')">Standards</button>
-                <button class="ai-mode-toggle" data-mode="troubleshooting" onclick="switchAIMode('troubleshooting')">Troubleshooting</button>
-                <button class="ai-mode-toggle" data-mode="reports" onclick="switchAIMode('reports')">Reports</button>
-            </div>
-
-            <div id="chatMessages" class="chat-messages">
-                <div class="chat-row bot">
-                    <div class="chat-avatar">AI</div>
-                    <div class="chat-bubble" id="chatWelcomeContent">
-                        Hello! I'm your LabBrain AI assistant. I can help you with lab procedures, equipment troubleshooting, standards compliance, and more. <br><br><strong>Choose a mode below to focus my responses, or ask me anything in General mode!</strong>
+            <div id="chatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
+                <div class="flex items-start gap-3 mb-6">
+                    <div class="ai-avatar-blue">AI</div>
+                    <div class="bg-white p-4 rounded-2xl border border-gray-200 max-w-3/4">
+                        Hello! I'm LabBrain AI Assistant. I can answer questions based on the documents you've uploaded and analyzed.<br><br>
+                        <strong>How to use me:</strong><br>
+                        • Ask specific questions about your uploaded documents<br>
+                        • I'll provide brief, direct answers based on the content<br><br>
+                        Try asking me about any topic related to your uploaded documents!
                     </div>
                 </div>
             </div>
-
-            <div id="typingIndicator" class="typing-indicator">
-                <span class="typing-dots"><span></span><span></span><span></span></span> <span>AI is typing</span>
+            <div id="typingIndicator" class="typing-indicator p-4 bg-white border border-gray-200 rounded-2xl mx-6 mb-4">
+                <span class="typing-dots-blue"><span></span><span></span><span></span></span> <span class="text-gray-600">AI is typing</span>
             </div>
-
-            <div class="chat-input">
-                <div class="chat-input-container">
-                    <input type="text" id="chatInput" class="chat-input-field" placeholder="Ask me anything about lab procedures, equipment, standards..." onkeypress="handleChatKeyPress(event)">
-                    <button class="send-button" onclick="sendMessage()">
-                        ➤
-                    </button>
+            <div class="p-6 border-t border-gray-200 bg-white">
+                <div class="flex gap-3 items-center">
+                    <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-blue-500 outline-none" placeholder="Ask the AI about your lab documents..." onkeypress="handleChatKeyPress(event)">
+                    <button class="w-12 h-12 blue-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
                 </div>
             </div>
         </div>
@@ -556,7 +571,7 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify({ message, mode: currentAIMode })
+                    body: JSON.stringify({ message })
                 });
                 
                 const data = await response.json();
@@ -578,37 +593,35 @@
         function addMessage(content, sender) {
             const chatMessages = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
-            messageDiv.className = `chat-row ${sender}`;
-            
+            messageDiv.className = 'flex items-start gap-3 mb-6' + (sender === 'user' ? ' flex-row-reverse' : '');
             const avatar = document.createElement('div');
-            avatar.className = 'chat-avatar';
-            avatar.textContent = sender === 'user' ? 'C' : 'AI';
-            
+            if (sender === 'user') {
+                avatar.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm';
+                avatar.style.background = 'linear-gradient(135deg, #2563eb, #1d4ed8)';
+                avatar.textContent = 'C';
+            } else {
+                avatar.className = 'ai-avatar-blue';
+                avatar.textContent = 'AI';
+            }
             const messageContent = document.createElement('div');
-            messageContent.className = 'chat-bubble';
-            messageContent.textContent = content;
-            
+            messageContent.className = 'p-4 rounded-2xl max-w-3/4';
+            messageContent.style.background = sender === 'user' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'white';
+            messageContent.style.color = sender === 'user' ? 'white' : '#374151';
+            messageContent.style.border = sender === 'user' ? 'none' : '1px solid #e5e7eb';
+            messageContent.innerHTML = content;
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(messageContent);
             chatMessages.appendChild(messageDiv);
-            
-            // Scroll to bottom
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // Store in history
-            messageHistory.push({ content, sender, timestamp: new Date(), topic: currentAIMode });
         }
 
         function showTypingIndicator() {
-            const indicator = document.getElementById('typingIndicator');
-            indicator.style.display = 'block';
-            const chatMessages = document.getElementById('chatMessages');
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            document.getElementById('typingIndicator').style.display = 'block';
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
         }
 
         function hideTypingIndicator() {
-            const indicator = document.getElementById('typingIndicator');
-            indicator.style.display = 'none';
+            document.getElementById('typingIndicator').style.display = 'none';
         }
 
         function generateAIResponse(userMessage, topic) {
