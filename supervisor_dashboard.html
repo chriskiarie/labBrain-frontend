@@ -115,10 +115,15 @@
             <div class="bg-white rounded-2xl p-8 shadow-md border border-gray-200">
                 <div class="flex justify-between items-center mb-6">
                     <h3 class="text-xl font-bold text-gray-800">AI Document Classification & Analysis</h3>
-                    <button onclick="analyzeAllDocuments()" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold flex items-center gap-2">
-                        <span>🔍</span>
-                        Analyze
-                    </button>
+                    <div class="flex gap-2">
+                        <button onclick="analyzeAllDocuments()" id="analyzeBtn" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition-colors font-semibold flex items-center gap-2">
+                            <span>🔍</span>
+                            Analyze
+                        </button>
+                        <button onclick="reanalyzeAllDocuments()" id="reanalyzeBtn" class="bg-gray-400 text-white px-4 py-3 rounded-lg flex items-center gap-2 cursor-not-allowed" disabled title="Re-analyze all documents">
+                            <span style="font-size: 1.2em;">♻️</span>
+                        </button>
+                    </div>
                 </div>
                 <div id="classificationList">
                     <!-- Classifications will be loaded dynamically from uploaded documents -->
@@ -398,20 +403,29 @@
 
         function updateAnalyzeButtonState(unanalyzedCount, totalCount) {
             const analyzeBtn = document.querySelector('button[onclick="analyzeAllDocuments()"]');
-            if (!analyzeBtn) return;
+            const reanalyzeBtn = document.querySelector('button[onclick="reanalyzeAllDocuments()"]');
+            if (!analyzeBtn || !reanalyzeBtn) return;
             
-            if (unanalyzedCount === 0) {
-                // All documents analyzed - show gray disabled state
+            if (unanalyzedCount === 0 && totalCount > 0) {
+                // All documents analyzed - show gray disabled state for Analyze, enable Re-analyze
                 analyzeBtn.innerHTML = '<span>✅</span> All Analyzed';
                 analyzeBtn.disabled = true;
                 analyzeBtn.classList.remove('bg-green-500', 'hover:bg-green-600');
                 analyzeBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
+                
+                reanalyzeBtn.disabled = false;
+                reanalyzeBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
+                reanalyzeBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
             } else {
-                // Has unanalyzed documents - show green active state
+                // Has unanalyzed documents - show green active state for Analyze, disable Re-analyze
                 analyzeBtn.innerHTML = `<span>🔍</span> Analyze (${unanalyzedCount})`;
                 analyzeBtn.disabled = false;
                 analyzeBtn.classList.remove('bg-gray-400', 'cursor-not-allowed');
                 analyzeBtn.classList.add('bg-green-500', 'hover:bg-green-600');
+                
+                reanalyzeBtn.disabled = true;
+                reanalyzeBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                reanalyzeBtn.classList.add('bg-gray-400', 'cursor-not-allowed');
             }
         }
 
@@ -1206,6 +1220,74 @@
         .animate-fade-out { animation: fade-out 0.4s cubic-bezier(.4,0,.2,1) both; }
         `;
         document.head.appendChild(style);
+
+        async function reanalyzeAllDocuments() {
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    showToast('Please log in to re-analyze documents.', 'error');
+                    return;
+                }
+                // Get all documents
+                const response = await fetch('https://labbrain-backend.onrender.com/api/documents', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (!data.success || !data.data.documents.length) {
+                    showToast('No documents found to re-analyze.', 'error');
+                    return;
+                }
+                // Show loading state
+                const reanalyzeBtn = document.querySelector('button[onclick="reanalyzeAllDocuments()"]');
+                const originalText = reanalyzeBtn.innerHTML;
+                reanalyzeBtn.innerHTML = '<span>♻️</span> Re-analyzing...';
+                reanalyzeBtn.disabled = true;
+                reanalyzeBtn.classList.remove('bg-blue-500', 'hover:bg-blue-600');
+                reanalyzeBtn.classList.add('bg-gray-400');
+                let successCount = 0;
+                let errorCount = 0;
+                for (const doc of data.data.documents) {
+                    try {
+                        const analysisResponse = await fetch('https://labbrain-backend.onrender.com/api/ai/analyze', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ documentId: doc._id })
+                        });
+                        const analysisData = await analysisResponse.json();
+                        if (analysisData.success) {
+                            successCount++;
+                        } else {
+                            errorCount++;
+                        }
+                    } catch (error) {
+                        errorCount++;
+                    }
+                }
+                // Show results
+                if (successCount > 0) {
+                    showToast(`Re-analysis complete! Successfully re-analyzed ${successCount} document(s).${errorCount > 0 ? ` ${errorCount} document(s) failed.` : ''}`, 'success');
+                    loadExistingDocuments();
+                } else {
+                    showToast('Re-analysis failed for all documents. Please try again.', 'error');
+                    reanalyzeBtn.innerHTML = originalText;
+                    reanalyzeBtn.disabled = false;
+                    reanalyzeBtn.classList.remove('bg-gray-400');
+                    reanalyzeBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                }
+            } catch (error) {
+                showToast('Error re-analyzing documents: ' + error.message, 'error');
+                const reanalyzeBtn = document.querySelector('button[onclick="reanalyzeAllDocuments()"]');
+                if (reanalyzeBtn) {
+                    reanalyzeBtn.innerHTML = '<span>♻️</span>';
+                    reanalyzeBtn.disabled = false;
+                    reanalyzeBtn.classList.remove('bg-gray-400');
+                    reanalyzeBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
+                }
+            }
+        }
     </script>
 </body>
 </html> 
