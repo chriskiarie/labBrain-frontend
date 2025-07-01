@@ -1270,9 +1270,14 @@
                 if (successCount > 0) {
                     showToast(`Re-analysis complete! Successfully re-analyzed ${successCount} document(s).${errorCount > 0 ? ` ${errorCount} document(s) failed.` : ''}`, 'success');
                     loadExistingDocuments();
+                    // Reset button to default
+                    reanalyzeBtn.innerHTML = '<span style="font-size: 1.2em;">♻️</span>';
+                    reanalyzeBtn.disabled = false;
+                    reanalyzeBtn.classList.remove('bg-gray-400');
+                    reanalyzeBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
                 } else {
                     showToast('Re-analysis failed for all documents. Please try again.', 'error');
-                    reanalyzeBtn.innerHTML = originalText;
+                    reanalyzeBtn.innerHTML = '<span style="font-size: 1.2em;">♻️</span>';
                     reanalyzeBtn.disabled = false;
                     reanalyzeBtn.classList.remove('bg-gray-400');
                     reanalyzeBtn.classList.add('bg-blue-500', 'hover:bg-blue-600');
