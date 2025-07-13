@@ -110,102 +110,7 @@
             box-shadow: 0 4px 16px rgba(0,0,0,0.07);
             padding: 2rem;
         }
-        .onboarding-chat {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.07);
-            padding: 1.2rem 2rem 1.2rem 2rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-            height: 160px;
-            min-height: 120px;
-            margin: 0;
-            position: static;
-        }
-        .chat-history {
-            flex: 1 1 auto;
-            max-height: 80px;
-            overflow-y: auto;
-            margin-bottom: 0.5rem;
-            background: transparent;
-            display: flex;
-            flex-direction: column;
-            gap: 0.7rem;
-        }
-        .chat-msg {
-            display: flex;
-            align-items: flex-end;
-            gap: 0.7rem;
-        }
-        .chat-msg.user {
-            flex-direction: row-reverse;
-        }
-        .chat-msg .chat-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1.1rem;
-        }
-        .chat-msg.user .chat-avatar {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #fff;
-        }
-        .chat-msg.bot .chat-avatar {
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: #fff;
-        }
-        .chat-bubble {
-            padding: 0.7rem 1.1rem;
-            border-radius: 16px;
-            font-size: 1rem;
-            max-width: 70%;
-            word-break: break-word;
-        }
-        .chat-msg.user .chat-bubble {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            color: #fff;
-            border-bottom-right-radius: 4px;
-            border-bottom-left-radius: 16px;
-        }
-        .chat-msg.bot .chat-bubble {
-            background: linear-gradient(135deg, #bbf7d0, #22c55e22);
-            color: #14532d;
-            border-bottom-left-radius: 4px;
-            border-bottom-right-radius: 16px;
-        }
-        .chat-input-row {
-            background: #f8fafc;
-            border-radius: 999px;
-            box-shadow: 0 2px 8px rgba(34,197,94,0.07);
-            padding: 0.5rem 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.7rem;
-            position: static;
-        }
-        .chat-input {
-            flex: 1;
-            min-height: 38px;
-            max-height: 90px;
-            resize: none;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 999px;
-            padding: 0.7rem 1rem;
-            font-size: 1rem;
-            transition: border 0.2s;
-            background: transparent;
-        }
-        .chat-input:focus { border-color: #22c55e; outline: none; }
-        .chat-send-btn { margin-left: 0.5rem; }
-        .typing-indicator { display: none; color: #64748b; font-size: 1rem; margin-left: 2.5rem; }
-        .typing-dots { display: inline-block; }
-        .typing-dots::after { content: ''; animation: typing 1.5s infinite; }
-        @keyframes typing { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
+
         /* Toasts */
         .toast-container { position: fixed; top: 24px; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; gap: 0.7rem; align-items: center; }
         .toast { padding: 14px 28px; border-radius: 12px; font-weight: 600; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.13); opacity: 0.97; font-size: 1.05rem; }
@@ -249,7 +154,7 @@
             box-shadow: 0 0 0 4px #dbeafe, 0 4px 32px 0 #2563eb33;
             border-color: #2563eb;
         }
-        .chat-send-btn, .sidebar-btn, #quizForm .chat-send-btn {
+        .sidebar-btn, #quizForm .chat-send-btn {
             background: linear-gradient(135deg, #22c55e, #16a34a) !important;
             color: #fff !important;
             border: none;
@@ -260,14 +165,13 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .chat-send-btn:disabled, #quizForm .chat-send-btn:disabled {
+        #quizForm .chat-send-btn:disabled {
             background: #bbf7d0 !important;
             color: #a7f3d0 !important;
             cursor: not-allowed;
         }
         .content-area > .flex { margin-bottom: 1.5rem; }
         .content-area { padding-top: 0; }
-        .onboarding-chat { margin-top: 0.5rem; }
     </style>
 </head>
 <body>
@@ -293,7 +197,7 @@
     <!-- Green Welcome Section for Onboarding -->
     <div class="welcome-section w-full mt-4 mb-4">
         <h2 class="text-2xl font-bold mb-2">Welcome to LabBrain Onboarding</h2>
-        <p class="text-blue-100">This section will guide you through the essentials of working in our calibration lab. Use the modules on the left to navigate. If you have questions, use the chat below!</p>
+        <p class="text-blue-100">This section will guide you through the essentials of working in our calibration lab. Use the modules on the left to navigate.</p>
     </div>
 
     <div class="main-container">
@@ -308,14 +212,6 @@
         <div class="content-area">
             <div class="learning-content" id="learningContent">
                 <!-- Module content will be injected here -->
-            </div>
-            <div class="onboarding-chat">
-                <div class="chat-history" id="chatHistory"></div>
-                <div class="typing-indicator" id="typingIndicator"><span class="typing-dots"></span> AI is typing</div>
-                <div class="chat-input-row">
-                    <textarea class="chat-input" id="chatInput" rows="1" placeholder="Ask about this module..." oninput="autoGrow(this)" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendOnboardingMessage();}"></textarea>
-                    <button class="chat-send-btn" id="chatSendBtn" onclick="sendOnboardingMessage()">Send</button>
-                </div>
             </div>
         </div>
     </div>
@@ -375,46 +271,7 @@
                 }, 100);
             }
         }
-        // --- Onboarding Chat Logic ---
-        const chatHistory = document.getElementById('chatHistory');
-        const chatInput = document.getElementById('chatInput');
-        const chatSendBtn = document.getElementById('chatSendBtn');
-        const typingIndicator = document.getElementById('typingIndicator');
-        function sendOnboardingMessage() {
-            const msg = chatInput.value.trim();
-            if (!msg) return;
-            addChatMessage('user', msg);
-            chatInput.value = '';
-            chatSendBtn.disabled = true;
-            typingIndicator.style.display = 'block';
-            setTimeout(() => {
-                // Simulated AI response
-                const response = getSimulatedAIResponse(msg);
-                addChatMessage('bot', response);
-                typingIndicator.style.display = 'none';
-                chatSendBtn.disabled = false;
-            }, 1200);
-        }
-        function addChatMessage(sender, text) {
-            const div = document.createElement('div');
-            div.className = 'chat-msg ' + (sender === 'user' ? 'user' : 'bot');
-            div.innerHTML = `<div class='chat-avatar'>${sender === 'user' ? 'U' : 'AI'}</div><div class='chat-bubble'>${text}</div>`;
-            chatHistory.appendChild(div);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-        }
-        function getSimulatedAIResponse(msg) {
-            msg = msg.toLowerCase();
-            if (msg.includes('safety')) return 'Always wear PPE and report hazards immediately.';
-            if (msg.includes('iso')) return 'ISO 17025 ensures quality and competence in labs.';
-            if (msg.includes('equipment')) return 'Check calibration status before using any equipment.';
-            if (msg.includes('sop')) return 'Follow written SOPs and document your work.';
-            if (msg.includes('hello') || msg.includes('hi')) return 'Hello! How can I help you with onboarding?';
-            return 'That is a great question! Please refer to the module content or ask your supervisor for more details.';
-        }
-        function autoGrow(textarea) {
-            textarea.style.height = 'auto';
-            textarea.style.height = (textarea.scrollHeight) + 'px';
-        }
+
         // --- Toasts ---
         function showToast(msg, type = 'success') {
             const toastContainer = document.getElementById('toastContainer');
