@@ -100,7 +100,7 @@
             justify-content: flex-start;
         }
         .learning-content {
-            flex: 0 0 auto;
+            flex: 1 1 auto;
             min-height: 500px;
             max-height: none;
             overflow-y: auto;
@@ -227,12 +227,619 @@
             { id: 'quiz', title: 'Quiz: Knowledge Check' }
         ];
         const moduleContents = {
-            welcome: `<h3>Welcome to the LabBrain Onboarding!</h3><p>This onboarding will guide you through the essentials of working in our calibration lab. Use the modules on the left to navigate. If you have questions, use the chat below!</p>`,
-            safety: `<h3>Lab Safety & PPE</h3><ul><li>Always wear appropriate PPE (lab coat, gloves, safety glasses).</li><li>Know the location of emergency exits and equipment.</li><li>Report any unsafe conditions immediately.</li></ul>`,
-            equipment: `<h3>Equipment Overview</h3><p>Our lab uses a variety of precision instruments. Always check calibration status before use. If unsure, ask a supervisor.</p>`,
-            sops: `<h3>Standard Operating Procedures (SOPs)</h3><ul><li>Follow written SOPs for all procedures.</li><li>Document all work in the lab notebook.</li><li>Never deviate from SOPs without supervisor approval.</li></ul>`,
-            iso: `<h3>About ISO 17025</h3><p>ISO 17025 is the international standard for testing and calibration labs. It ensures quality, competence, and traceability in all lab work.</p>`,
-            quiz: `<h3>Quiz: Knowledge Check</h3><form id='quizForm'><p>1. What should you do if you notice a safety hazard?</p><label><input type='radio' name='q1'> Ignore it</label><br><label><input type='radio' name='q1'> Report it immediately</label><br><label><input type='radio' name='q1'> Wait for someone else</label><br><br><button type='submit' class='chat-send-btn'>Submit Quiz</button></form>`
+            welcome: `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-l-4 border-blue-500">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Welcome to the ACDC Calibration Laboratory</h2>
+                        <p class="text-gray-700 leading-relaxed">Welcome to our state-of-the-art calibration laboratory where precision meets excellence. Our lab is dedicated to providing accurate and reliable calibration services for electrical and electronic equipment.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-3">What We Do</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li>• Electrical equipment calibration</li>
+                                <li>• Electronic instrument verification</li>
+                                <li>• Precision measurement services</li>
+                                <li>• Quality assurance testing</li>
+                                <li>• Compliance certification</li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-3">Lab Hours</h3>
+                            <ul class="space-y-2 text-gray-700">
+                                <li><strong>Monday - Friday:</strong> 8:00 AM - 5:00 PM</li>
+                                <li><strong>Saturday:</strong> 9:00 AM - 1:00 PM</li>
+                                <li><strong>Sunday:</strong> Closed</li>
+                                <li><strong>Emergency:</strong> Contact supervisor</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Lab Team Members</h3>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                                <div class="w-16 h-16 bg-blue-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-xl">L1</div>
+                                <h4 class="font-semibold text-gray-800">LbaTech 1</h4>
+                                <p class="text-sm text-gray-600">Senior Lab Technician</p>
+                                <p class="text-xs text-gray-500 mt-1">Equipment calibration specialist</p>
+                            </div>
+                            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                                <div class="w-16 h-16 bg-green-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-xl">L2</div>
+                                <h4 class="font-semibold text-gray-800">LbaTech 2</h4>
+                                <p class="text-sm text-gray-600">Lab Technician</p>
+                                <p class="text-xs text-gray-500 mt-1">Quality control & testing</p>
+                            </div>
+                            <div class="text-center p-4 bg-gray-50 rounded-lg">
+                                <div class="w-16 h-16 bg-purple-500 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-xl">L3</div>
+                                <h4 class="font-semibold text-gray-800">LbaTech 3</h4>
+                                <p class="text-sm text-gray-600">Junior Lab Technician</p>
+                                <p class="text-xs text-gray-500 mt-1">Data recording & support</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Important Contacts</h3>
+                        <div class="grid md:grid-cols-2 gap-4 text-gray-700">
+                            <div>
+                                <p><strong>Lab Supervisor:</strong> Dr. Sarah Johnson</p>
+                                <p><strong>Emergency:</strong> Ext. 911</p>
+                            </div>
+                            <div>
+                                <p><strong>Safety Officer:</strong> Mike Chen</p>
+                                <p><strong>Maintenance:</strong> Ext. 555</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            safety: `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-red-50 to-orange-50 p-6 rounded-lg border-l-4 border-red-500">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Laboratory Safety & Personal Protective Equipment (PPE)</h2>
+                        <p class="text-gray-700">Safety is our top priority. All lab personnel must follow these safety protocols at all times.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Required PPE</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Lab Coat:</strong> Must be worn at all times, properly fastened
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Safety Glasses:</strong> Required when working with electrical equipment
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Gloves:</strong> Nitrile gloves for handling equipment
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Closed-toe Shoes:</strong> No sandals or open footwear
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Emergency Procedures</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Fire Emergency:</strong> Pull alarm, evacuate immediately
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Electrical Shock:</strong> Do not touch, call emergency
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Chemical Spill:</strong> Contain area, notify supervisor
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-orange-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Medical Emergency:</strong> Call 911, notify supervisor
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Safety Rules</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">General Safety</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Never work alone in the lab</li>
+                                    <li>• Keep work areas clean and organized</li>
+                                    <li>• No food or drinks in the lab</li>
+                                    <li>• Report all accidents immediately</li>
+                                    <li>• Know emergency exit locations</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Electrical Safety</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Check equipment before use</li>
+                                    <li>• Never overload circuits</li>
+                                    <li>• Use proper grounding</li>
+                                    <li>• Turn off power before maintenance</li>
+                                    <li>• Inspect cords regularly</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-red-50 p-6 rounded-lg border-l-4 border-red-500">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Emergency Contacts</h3>
+                        <div class="grid md:grid-cols-3 gap-4 text-gray-700">
+                            <div>
+                                <p><strong>Fire Department:</strong> 911</p>
+                                <p><strong>Security:</strong> Ext. 100</p>
+                            </div>
+                            <div>
+                                <p><strong>Safety Officer:</strong> Ext. 555</p>
+                                <p><strong>Lab Supervisor:</strong> Ext. 200</p>
+                            </div>
+                            <div>
+                                <p><strong>Medical Emergency:</strong> 911</p>
+                                <p><strong>Facilities:</strong> Ext. 300</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            equipment: `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 p-6 rounded-lg border-l-4 border-green-500">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Laboratory Equipment Overview</h2>
+                        <p class="text-gray-700">Our lab is equipped with precision instruments for accurate calibration and testing. All equipment must be handled with care and proper procedures.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Calibration Equipment</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Multimeters:</strong> Fluke 8846A, Keysight 34461A
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Oscilloscopes:</strong> Tektronix TBS2000 series
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Function Generators:</strong> Keysight 33500B series
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Power Supplies:</strong> Agilent E3631A, BK Precision 9130
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Testing Equipment</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Load Banks:</strong> Chroma 63200 series
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Temperature Chambers:</strong> ESPEC BTL series
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Data Loggers:</strong> Keysight 34972A
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Reference Standards:</strong> Fluke 5520A calibrator
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Equipment Usage Guidelines</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Before Use</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Check calibration status</li>
+                                    <li>• Inspect for damage</li>
+                                    <li>• Verify power requirements</li>
+                                    <li>• Read operating manual</li>
+                                    <li>• Ensure proper setup</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">During Use</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Follow SOPs exactly</li>
+                                    <li>• Monitor equipment status</li>
+                                    <li>• Record all measurements</li>
+                                    <li>• Report any issues</li>
+                                    <li>• Maintain clean environment</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Equipment Maintenance</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li>• Daily cleaning and inspection</li>
+                            <li>• Weekly calibration checks</li>
+                            <li>• Monthly preventive maintenance</li>
+                            <li>• Quarterly performance verification</li>
+                            <li>• Annual calibration certification</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            sops: `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-lg border-l-4 border-purple-500">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Standard Operating Procedures (SOPs)</h2>
+                        <p class="text-gray-700">SOPs ensure consistency, quality, and safety in all laboratory operations. All procedures must be followed exactly as written.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">General SOPs</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-001:</strong> Laboratory Entry and Exit Procedures
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-002:</strong> Equipment Setup and Shutdown
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-003:</strong> Data Recording and Documentation
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-purple-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-004:</strong> Quality Control Procedures
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Calibration SOPs</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-101:</strong> Multimeter Calibration
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-102:</strong> Oscilloscope Calibration
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-103:</strong> Function Generator Calibration
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-indigo-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>SOP-104:</strong> Power Supply Calibration
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Documentation Requirements</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Required Records</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Equipment calibration logs</li>
+                                    <li>• Test result documentation</li>
+                                    <li>• Quality control records</li>
+                                    <li>• Incident reports</li>
+                                    <li>• Maintenance schedules</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Documentation Standards</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Use approved forms only</li>
+                                    <li>• Write clearly and legibly</li>
+                                    <li>• Include all required fields</li>
+                                    <li>• Sign and date all entries</li>
+                                    <li>• Maintain chronological order</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">SOP Compliance</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li>• Never deviate from written SOPs without supervisor approval</li>
+                            <li>• Report any SOP deficiencies or improvements needed</li>
+                            <li>• Participate in regular SOP review and updates</li>
+                            <li>• Complete SOP training before performing procedures</li>
+                            <li>• Maintain current SOP versions in work areas</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            iso: `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-teal-50 to-cyan-50 p-6 rounded-lg border-l-4 border-teal-500">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">ISO 17025:2017 Quality Management System</h2>
+                        <p class="text-gray-700">ISO 17025 is the international standard for testing and calibration laboratories. It ensures quality, competence, and traceability in all laboratory operations.</p>
+                    </div>
+
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Key Principles</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Competence:</strong> Qualified personnel and validated methods
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Impartiality:</strong> Objective and unbiased testing
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Consistency:</strong> Reproducible and reliable results
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-teal-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Traceability:</strong> Measurement chain to national standards
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Quality Management</h3>
+                            <ul class="space-y-3 text-gray-700">
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-cyan-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Quality Policy:</strong> Commitment to excellence
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-cyan-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Quality Objectives:</strong> Measurable improvement goals
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-cyan-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Management Review:</strong> Regular system evaluation
+                                    </div>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="w-2 h-2 bg-cyan-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                                    <div>
+                                        <strong>Continuous Improvement:</strong> Ongoing enhancement
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-lg border border-gray-200">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Role in ISO 17025</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Daily Responsibilities</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Follow documented procedures exactly</li>
+                                    <li>• Maintain accurate records</li>
+                                    <li>• Report non-conformities</li>
+                                    <li>• Participate in quality activities</li>
+                                    <li>• Use calibrated equipment only</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800 mb-2">Quality Assurance</h4>
+                                <ul class="space-y-2 text-gray-700 text-sm">
+                                    <li>• Perform quality control checks</li>
+                                    <li>• Verify measurement uncertainty</li>
+                                    <li>• Participate in proficiency testing</li>
+                                    <li>• Maintain equipment calibration</li>
+                                    <li>• Document all activities</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-green-50 p-6 rounded-lg border-l-4 border-green-500">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Benefits of ISO 17025</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li>• Enhanced customer confidence and trust</li>
+                            <li>• Improved laboratory efficiency and accuracy</li>
+                            <li>• International recognition and acceptance</li>
+                            <li>• Reduced measurement uncertainty</li>
+                            <li>• Continuous improvement culture</li>
+                        </ul>
+                    </div>
+                </div>
+            `,
+            quiz: `
+                <div class="space-y-6">
+                    <div class="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-lg border-l-4 border-orange-500">
+                        <h2 class="text-2xl font-bold text-gray-800 mb-4">Knowledge Check Quiz</h2>
+                        <p class="text-gray-700">Test your understanding of the laboratory procedures and safety protocols. Complete all questions to proceed.</p>
+                    </div>
+
+                    <form id="quizForm" class="space-y-6">
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Question 1: Safety Protocol</h3>
+                            <p class="text-gray-700 mb-4">What should you do if you notice a safety hazard in the laboratory?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="q1" value="a" class="mr-3">
+                                    <span class="text-gray-700">Ignore it and continue working</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q1" value="b" class="mr-3">
+                                    <span class="text-gray-700">Report it immediately to your supervisor</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q1" value="c" class="mr-3">
+                                    <span class="text-gray-700">Wait for someone else to notice it</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Question 2: PPE Requirements</h3>
+                            <p class="text-gray-700 mb-4">Which of the following PPE is required when working with electrical equipment?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="q2" value="a" class="mr-3">
+                                    <span class="text-gray-700">Lab coat and safety glasses</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q2" value="b" class="mr-3">
+                                    <span class="text-gray-700">Only lab coat</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q2" value="c" class="mr-3">
+                                    <span class="text-gray-700">No PPE required</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Question 3: Equipment Usage</h3>
+                            <p class="text-gray-700 mb-4">Before using any laboratory equipment, what should you check first?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="q3" value="a" class="mr-3">
+                                    <span class="text-gray-700">The equipment's color</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q3" value="b" class="mr-3">
+                                    <span class="text-gray-700">The calibration status</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q3" value="c" class="mr-3">
+                                    <span class="text-gray-700">The equipment's brand name</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Question 4: SOP Compliance</h3>
+                            <p class="text-gray-700 mb-4">What should you do if you need to deviate from a written SOP?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="q4" value="a" class="mr-3">
+                                    <span class="text-gray-700">Proceed without approval</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q4" value="b" class="mr-3">
+                                    <span class="text-gray-700">Get supervisor approval first</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q4" value="c" class="mr-3">
+                                    <span class="text-gray-700">Ignore the SOP completely</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-lg border border-gray-200">
+                            <h3 class="text-lg font-semibold text-gray-800 mb-4">Question 5: ISO 17025</h3>
+                            <p class="text-gray-700 mb-4">What is the main purpose of ISO 17025 in a laboratory?</p>
+                            <div class="space-y-2">
+                                <label class="flex items-center">
+                                    <input type="radio" name="q5" value="a" class="mr-3">
+                                    <span class="text-gray-700">To reduce costs</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q5" value="b" class="mr-3">
+                                    <span class="text-gray-700">To ensure quality and competence</span>
+                                </label>
+                                <label class="flex items-center">
+                                    <input type="radio" name="q5" value="c" class="mr-3">
+                                    <span class="text-gray-700">To increase speed of testing</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="chat-send-btn px-8 py-3 text-lg">Submit Quiz</button>
+                        </div>
+                    </form>
+                </div>
+            `
         };
         // --- Sidebar Module Logic ---
         function renderModules() {
