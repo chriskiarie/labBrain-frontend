@@ -370,7 +370,7 @@
                 <p class="font-semibold text-gray-800">Welcome, Chris</p>
                 <p class="text-sm text-gray-600">Lab User</p>
             </div>
-            <div class="user-avatar">C</div>
+            <div class="user-avatar">U</div>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
     </header>
@@ -574,7 +574,11 @@
             messageContent.style.background = sender === 'user' ? 'linear-gradient(135deg, #2563eb, #1d4ed8)' : 'white';
             messageContent.style.color = sender === 'user' ? 'white' : '#374151';
             messageContent.style.border = sender === 'user' ? 'none' : '1px solid #e5e7eb';
-            messageContent.innerHTML = content;
+            if (sender === 'bot' || sender === 'system') {
+                messageContent.innerHTML = content;
+            } else {
+                messageContent.textContent = content;
+            }
             messageDiv.appendChild(avatar);
             messageDiv.appendChild(messageContent);
             chatMessages.appendChild(messageDiv);
