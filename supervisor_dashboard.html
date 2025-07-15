@@ -265,6 +265,15 @@
     </div>
 
     <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        companyblue: '#0466b1',
+                    }
+                }
+            }
+        }
         // Load user data from localStorage
         let currentUser = null;
         
@@ -446,10 +455,15 @@
         }
 
         function viewDocuments() {
-            // Hide main dashboard and show full-page manage documents
-            document.getElementById('mainDashboard').classList.add('hidden');
-            document.getElementById('manageDocumentsPage').classList.remove('hidden');
+            // Show the manage documents modal
+            document.getElementById('manageDocumentsModal').classList.remove('hidden');
+            
+            // Load the documents
             loadManageDocuments();
+        }
+
+        function closeManageDocuments() {
+            document.getElementById('manageDocumentsModal').classList.add('hidden');
         }
 
         function closeManageDocuments() {
@@ -1296,3 +1310,4 @@
     </script>
 </body>
 </html> 
+
