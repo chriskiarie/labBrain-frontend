@@ -392,7 +392,7 @@
 
         <!-- Main Chat Area (Lab User Chat, Supervisor Logic, Blue Theme) -->
         <div class="chat-container user-full-width" style="min-height: 750px;">
-            <div class="blue-gradient text-white p-6 flex items-center justify-between rounded-t-2xl">
+            <div class="bg-companyblue text-white p-6 flex items-center justify-between rounded-t-2xl">
                 <h3 class="font-semibold text-lg">LabBrain AI Assistant</h3>
             </div>
             <div id="chatMessages" class="flex-1 p-6 overflow-y-auto bg-gray-50">
@@ -423,14 +423,23 @@
             
             <div class="p-6 border-t border-gray-200 bg-white rounded-b-2xl">
                 <div class="flex gap-3 items-center">
-                    <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-blue-500 outline-none" placeholder="Ask the AI about your lab documents..." onkeypress="handleChatKeyPress(event)">
-                    <button class="w-12 h-12 blue-gradient text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
+                    <input type="text" id="chatInput" class="flex-1 p-4 border-2 border-gray-200 rounded-full focus:border-companyblue outline-none" placeholder="Ask the AI about your lab documents..." onkeypress="handleChatKeyPress(event)">
+                    <button class="w-12 h-12 bg-companyblue text-white rounded-full flex items-center justify-center hover:scale-105 transition-transform" onclick="sendMessage()">➤</button>
                 </div>
             </div>
         </div>
     </main>
 
     <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        companyblue: '#0466b1',
+                    }
+                }
+            }
+        }
         // Load user data from localStorage
         let currentUser = null;
         
