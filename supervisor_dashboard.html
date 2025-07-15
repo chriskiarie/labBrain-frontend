@@ -11,10 +11,10 @@
     <link rel="stylesheet" href="styles.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
-        .red-theme { background: #fef2f2; }
-        .red-gradient { background: linear-gradient(135deg, #ef4444, #dc2626); }
-        .red-accent { color: #ef4444; }
-        .upload-area { border: 2px dashed #ef4444; background: #fef2f2; }
+        .red-theme { background: #eaf4fb; }
+        .red-gradient { background: linear-gradient(135deg, #0466b1, #035397); }
+        .red-accent { color: #0466b1; }
+        .upload-area { border: 2px dashed #0466b1; background: #eaf4fb; }
         .chat-modal { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; }
         .chat-container { background: white; border-radius: 20px; width: 98%; max-width: 700px; height: 80vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.18); }
         @media (min-width: 768px) {
@@ -31,7 +31,7 @@
             width: 6px;
             height: 6px;
             margin: 0 2px;
-            background: #ef4444;
+            background: #0466b1;
             border-radius: 50%;
             opacity: 0.5;
             animation: typing-bounce 1.2s infinite both;
@@ -47,7 +47,7 @@
             height: 48px;
             min-width: 48px;
             min-height: 48px;
-            background: #10b981;
+            background: #0466b1;
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -922,7 +922,7 @@
             const avatar = document.createElement('div');
             if (sender === 'user') {
                 avatar.className = 'w-10 h-10 rounded-full flex items-center justify-center text-white font-semibold text-sm';
-                avatar.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+                avatar.style.background = 'linear-gradient(135deg, #0466b1, #035397)';
                 avatar.textContent = 'C';
             } else {
                 avatar.className = 'ai-avatar';
@@ -931,7 +931,7 @@
             
             const messageContent = document.createElement('div');
             messageContent.className = 'p-4 rounded-2xl max-w-3/4';
-            messageContent.style.background = sender === 'user' ? 'linear-gradient(135deg, #ef4444, #dc2626)' : 'white';
+            messageContent.style.background = sender === 'user' ? 'linear-gradient(135deg, #0466b1, #035397)' : 'white';
             messageContent.style.color = sender === 'user' ? 'white' : '#374151';
             messageContent.style.border = sender === 'user' ? 'none' : '1px solid #e5e7eb';
             messageContent.textContent = content;
@@ -1310,4 +1310,3 @@
     </script>
 </body>
 </html> 
-
