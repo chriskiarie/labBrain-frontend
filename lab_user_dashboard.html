@@ -443,6 +443,12 @@
         // Load user data from localStorage
         let currentUser = null;
         
+        // Debug: Check for global error handlers
+        console.log('=== GLOBAL ERROR HANDLER DEBUG ===');
+        console.log('Window error handler:', window.onerror);
+        console.log('Window unhandled rejection handler:', window.onunhandledrejection);
+        console.log('Global error handlers:', window.addEventListener);
+        
         function loadUserData() {
             const userData = localStorage.getItem('user');
             if (userData) {
