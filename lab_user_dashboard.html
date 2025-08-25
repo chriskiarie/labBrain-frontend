@@ -566,7 +566,11 @@
                 if (data.success) {
                     addMessage(data.data.response, 'bot');
                 } else {
-                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                    console.log('=== LAB USER ERROR RESPONSE DEBUG ===');
+                    console.log('Error response structure:', data);
+                    console.log('Error message:', data.message);
+                    console.log('Error data:', data.data);
+                    addMessage(`Backend Error: ${data.message || 'Unknown error'}`, 'bot');
                 }
             } catch (error) {
                 hideTypingIndicator();
