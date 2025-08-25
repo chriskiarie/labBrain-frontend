@@ -443,11 +443,7 @@
         // Load user data from localStorage
         let currentUser = null;
         
-        // Debug: Check for global error handlers
-        console.log('=== GLOBAL ERROR HANDLER DEBUG ===');
-        console.log('Window error handler:', window.onerror);
-        console.log('Window unhandled rejection handler:', window.onunhandledrejection);
-        console.log('Global error handlers:', window.addEventListener);
+
         
         function loadUserData() {
             const userData = localStorage.getItem('user');
@@ -545,12 +541,6 @@
                     return;
                 }
                 
-                console.log('=== LAB USER AI DEBUG ===');
-                console.log('Calling endpoint:', 'https://labbrain-backend.onrender.com/api/ai/chat');
-                console.log('Message being sent:', message);
-                console.log('Token exists:', !!token);
-                console.log('Token preview:', token ? `${token.substring(0, 20)}...` : 'None');
-                
                 // Call the AI backend, include current mode for context
                 const response = await fetch('https://labbrain-backend.onrender.com/api/ai/chat', {
                     method: 'POST',
@@ -561,22 +551,14 @@
                     body: JSON.stringify({ message })
                 });
                 
-                console.log('Response status:', response.status);
-                console.log('Response headers:', response.headers);
-                
                 const data = await response.json();
-                console.log('Response data:', data);
                 
                 hideTypingIndicator();
                 
                 if (data.success) {
                     addMessage(data.data.response, 'bot');
                 } else {
-                    console.log('=== LAB USER ERROR RESPONSE DEBUG ===');
-                    console.log('Error response structure:', data);
-                    console.log('Error message:', data.message);
-                    console.log('Error data:', data.data);
-                    addMessage(`Backend Error: ${data.message || 'Unknown error'}`, 'bot');
+                    addMessage(`Error: ${data.message || 'Unknown error'}`, 'bot');
                 }
             } catch (error) {
                 hideTypingIndicator();
