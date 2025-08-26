@@ -224,16 +224,7 @@
         </div>
     </div>
 
-    <!-- Manage Documents Modal Table Format -->
-    <div id="manageDocumentsModal" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-2xl shadow-lg w-full max-w-3xl p-8 relative">
-            <button class="absolute top-4 right-4 text-2xl text-gray-400 hover:text-red-500" onclick="closeManageDocuments()">&times;</button>
-            <h2 class="text-2xl font-bold mb-6">Manage Documents</h2>
-            <div id="manageDocumentsList">
-                <div class="text-center text-gray-500">Loading documents...</div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Chat Modal -->
     <div id="chatModal" class="chat-modal">
@@ -466,15 +457,12 @@
         }
 
         function viewDocuments() {
-            // Show the manage documents modal
-            document.getElementById('manageDocumentsModal').classList.remove('hidden');
+            // Show the manage documents page and hide main dashboard
+            document.getElementById('manageDocumentsPage').classList.remove('hidden');
+            document.getElementById('mainDashboard').classList.add('hidden');
             
             // Load the documents
             loadManageDocuments();
-        }
-
-        function closeManageDocuments() {
-            document.getElementById('manageDocumentsModal').classList.add('hidden');
         }
 
         function closeManageDocuments() {
@@ -915,7 +903,7 @@
                         addMessage(`📚 Sources: ${sources}`, 'system');
                     }
                 } else {
-                    addMessage('Sorry, I encountered an error. Please try again.', 'bot');
+                    addMessage(`Error: ${data.message || 'Unknown error'}`, 'bot');
                 }
             } catch (error) {
                 document.getElementById('typingIndicator').style.display = 'none';
